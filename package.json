@@ -1,0 +1,41 @@
+{
+  "name": "raptor",
+  "version": "1.0.0",
+  "description": "Raptor SDK",
+  "homepage": "https://github.com/muka/raptorjs",
+  "author": "Luca Capra",
+  "license": "Apache 2",
+  "main": "index.js",
+  "directories": {
+    "test": "test"
+  },
+  "scripts": {
+    "test": "node_modules/mocha/bin/mocha test/*.test.js",
+    "jsdoc": "jsdoc ./ -c=jsdoc.json -l -r"
+  },
+  "keywords": [
+    "raptor",
+    "broker",
+    "iot"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/muka/raptorjs.git"
+  },
+  "dependencies": {
+    "bluebird": "^3.4.0",
+    "debug": "^2.2.0",
+    "event-emitter": "^0.3.4",
+    "lodash": "^4.13.1",
+    "mocha": "^2.4.5",
+    "mqtt": "*",
+    "request": "^2.55.0",
+    "stompjs": "*"
+  },
+  "devDependencies": {
+    "chai": "^3.5.0",
+    "json-loader": "^0.5.4",
+    "mocha": "^2.5.3",
+    "webpack": "^1.13.1"
+  }
+}
