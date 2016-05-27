@@ -17,6 +17,9 @@ module.exports = {
     "customFields": {
       "example": true
     },
+    "settings": {
+      "storeEnabled": false
+    },
     "actions": [
       "makeCall",
       {

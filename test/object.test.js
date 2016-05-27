@@ -3,7 +3,7 @@ var Raptor = require('../index');
 
 var assert = require('chai').assert;
 
-var json = require('./device');
+var json = require('./data/device');
 var raptor;
 
 describe('raptor', function () {
@@ -29,9 +29,18 @@ describe('raptor', function () {
       var obj = raptor.fromJSON(json);
       var json2 = obj.toJSON();
 
-      console.log(json2);
-
       assert.equal(json.name, json2.name);
+
+      assert.equal(json.streams.temperature.name, json2.streams.temperature.name);
+      assert.equal(json.streams.temperature.channels.isActive, json2.streams.temperature.channels.isActive);
+      assert.equal(Object.keys(json.streams).length, Object.keys(json2.streams).length);
+
+      assert.equal(json.actions.length, json2.actions.length);
+      assert.equal(json.actions[1].status, json2.actions[1].status);
+
+      assert.equal(json.customFields.example, json2.customFields.example);
+      assert.equal(json.settings.storeEnabled, json2.settings.storeEnabled);
+
     });
   });
 

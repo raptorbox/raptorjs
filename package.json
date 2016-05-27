@@ -27,7 +27,6 @@
     "debug": "^2.2.0",
     "event-emitter": "^0.3.4",
     "lodash": "^4.13.1",
-    "mocha": "^2.4.5",
     "mqtt": "*",
     "request": "^2.55.0",
     "stompjs": "*"
