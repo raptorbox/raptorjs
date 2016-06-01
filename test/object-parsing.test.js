@@ -1,4 +1,6 @@
 
+var configFile = "./data/config.json";
+
 var Raptor = require('../index');
 
 var assert = require('chai').assert;
@@ -9,16 +11,12 @@ var raptor;
 describe('raptor', function () {
 
   before(function () {
-    raptor = new Raptor({
-      apiKey: "test"
-    });
+    raptor = new Raptor(require(configFile));
   });
 
   describe('fromJSON', function () {
     it('should load an object definition from JSON', function () {
-
       var obj = raptor.fromJSON(json);
-
       assert.equal(json.name, obj.name);
     });
   });

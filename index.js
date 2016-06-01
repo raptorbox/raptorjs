@@ -53,20 +53,15 @@ var Raptor = function (config) {
     this.config.transport = this.isBrowser ? 'stomp' : 'mqtt';
   }
 
-  /**
-   * Return a API client instance
-   */
-  this.client = client.instance({
-    baseUrl: config.url,
-    headers: {
-      'Content-Type': 'application/json',
-      'Authorization': (config.apiKey.indexOf('Bearer') > -1 ? config.apiKey : 'Bearer ' + config.apiKey),
-    }
-  });
-
   this.enableLongStackTraces = function () {
     Promise.longStackTraces();
   };
+
+
+  /**
+   * Return a API client instance
+   */
+  this.client = client.instance(this.config);
 
   this.newObject = function (data) {
     var obj = new ServiceObject(data);
