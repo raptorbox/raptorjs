@@ -16,9 +16,8 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
-"use strict";
+var d = require("debug")("raptorjs:index");
 
-var debug = require("debug");
 var Promise = require("bluebird");
 var _ = require("lodash");
 
@@ -33,6 +32,8 @@ var Raptor = function (config) {
   var defaultConfig = {
     apiKey: null,
     url: "https://api.raptorbox.eu",
+    transport: null,
+    debug: false
   };
 
   config = config || {};
@@ -43,25 +44,32 @@ var Raptor = function (config) {
     };
   }
 
-  this.config = _.cloneDeep(config);
+  this.config = {};
+
+  _.each(defaultConfig, function(val, key) {
+    instance.config[key] =
+      (config[key] === undefined) ? val : config[key];
+  });
 
   var me = this;
 
   this.isBrowser = (typeof window !== 'undefined');
 
+  d("%sunning in browser", this.isBrowser ? 'R' : 'Not r');
+
   if(!this.config.transport) {
     this.config.transport = this.isBrowser ? 'stomp' : 'mqtt';
   }
 
-  this.enableLongStackTraces = function () {
-    Promise.longStackTraces();
-  };
-
+  d("Client configuration: %j", this.config);
 
   /**
    * Return a API client instance
    */
   this.client = client.instance(this.config);
+
+  // add Promise reference
+  this.Promise = Promise;
 
   this.newObject = function (data) {
     var obj = new ServiceObject(data);
@@ -136,7 +144,10 @@ var Raptor = function (config) {
    * @params Object search parameters
    * @return {Promise}
    */
-  this.search = function (params) {
+  this.find = this.search = function (params) {
+    if(typeof params === 'string') {
+      params = { search: params };
+    }
     return instance.client.post('/search', params)
       .then(function (data) {
         var json = (typeof data === 'string') ? JSON.parse(data) : data;

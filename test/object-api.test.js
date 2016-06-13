@@ -5,6 +5,7 @@ var Raptor = require('../index');
 var Promise = require('bluebird');
 
 var assert = require('chai').assert;
+var d = require('debug')("raptorjs:test:api");
 
 var json = require('./data/device');
 var raptor;
@@ -21,6 +22,7 @@ describe('raptor', function () {
       return raptor.create(json)
         .then(function(obj) {
           serviceObject = obj;
+          d("Created " + obj.id);
           assert.equal(json.name, obj.name);
           assert.notEqual(obj.id, null);
           return Promise.resolve();
@@ -31,43 +33,32 @@ describe('raptor', function () {
   describe('update device', function () {
     it('should update an object streams and actions', function () {
 
-      serviceObject.actions = [];
+      // it's pig slow :(
+      this.timeout(5000);
 
-      serviceObject.setStreams([{
-        name: "mystream",
-        channels: {
-          test: 'number',
-          test1: 'string'
-        }
-      }]);
+      if(serviceObject) throw new Error("Object not loaded?");
 
-      return serviceObject.update()
-        .then(function(obj) {
-          assert.equal(json.name, obj.name);
-          assert.notEqual(obj.id, null);
-          return Promise.resolve();
-        });
-    });
-  });
+      return new Promise(function(resolve, reject) {
+        setTimeout(function() {
 
-  describe('toJSON', function () {
-    it('should render the object as JSON', function () {
+          serviceObject.actions = [];
 
-      var obj = raptor.fromJSON(json);
-      var json2 = obj.toJSON();
+          serviceObject.setStreams([{
+            name: "mystream",
+            channels: {
+              test: 'number',
+              test1: 'string'
+            }
+          }]);
 
-      assert.equal(json.name, json2.name);
-
-      assert.equal(json.streams.temperature.name, json2.streams.temperature.name);
-      assert.equal(json.streams.temperature.channels.isActive, json2.streams.temperature.channels.isActive);
-      assert.equal(Object.keys(json.streams).length, Object.keys(json2.streams).length);
-
-      assert.equal(json.actions.length, json2.actions.length);
-      assert.equal(json.actions[1].status, json2.actions[1].status);
-
-      assert.equal(json.customFields.example, json2.customFields.example);
-      assert.equal(json.settings.storeEnabled, json2.settings.storeEnabled);
-
+          serviceObject.update()
+            .then(function(obj) {
+              assert.equal(json.name, obj.name);
+              assert.notEqual(obj.id, null);
+              resolve();
+            });
+        }, 2500);
+      });
     });
   });
 
