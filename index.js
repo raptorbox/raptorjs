@@ -167,3 +167,5 @@ var Raptor = function (config) {
 };
 
 module.exports = Raptor;
+module.exports.RecordSet = require("./lib/model/RecordSet");
+module.exports.ResultSet = require("./lib/model/ResultSet");
