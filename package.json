@@ -32,6 +32,8 @@
     "stompjs": "*"
   },
   "devDependencies": {
+    "babel-core": "^6.13.2",
+    "babel-loader": "^6.2.4",
     "chai": "^3.5.0",
     "json-loader": "^0.5.4",
     "mocha": "^2.5.3",

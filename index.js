@@ -32,7 +32,6 @@ var Raptor = function (config) {
   var defaultConfig = {
     apiKey: null,
     url: "https://api.raptorbox.eu",
-    transport: null,
     debug: false
   };
 
@@ -51,14 +50,18 @@ var Raptor = function (config) {
       (config[key] === undefined) ? val : config[key];
   });
 
+  var apikeyPrefix = "Bearer ";
+  if(instance.config.apiKey.substr(0, apikeyPrefix.length) !== apikeyPrefix ) {
+    instance.config.apiKey = apikeyPrefix + instance.config.apiKey;
+
+  }
+
   var me = this;
 
   this.isBrowser = (typeof window !== 'undefined');
 
-  d("%sunning in browser", this.isBrowser ? 'R' : 'Not r');
-
-  if(!this.config.transport) {
-    this.config.transport = this.isBrowser ? 'stomp' : 'mqtt';
+  if(this.isBrowser) {
+    d("Running in browser");
   }
 
   d("Client configuration: %j", this.config);
@@ -66,7 +69,7 @@ var Raptor = function (config) {
   /**
    * Return a API client instance
    */
-  this.client = client.instance(this.config);
+  this.client = client.create(this.config);
 
   // add Promise reference
   this.Promise = Promise;
@@ -110,7 +113,8 @@ var Raptor = function (config) {
    */
   this.load = function (id) {
     var obj = instance.newObject({
-      id: id
+      id: id,
+      name: "unknown"
     });
     return obj.load();
   };

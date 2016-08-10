@@ -19,7 +19,9 @@ module.exports = {
           ]
     },
     node: {
-        fs: "empty"
+        fs: 'empty',
+        net: 'empty',
+        tls: 'empty'
     },
     devtool: 'source-map'
 };
