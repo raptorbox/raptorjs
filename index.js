@@ -50,10 +50,11 @@ var Raptor = function (config) {
       (config[key] === undefined) ? val : config[key];
   });
 
-  var apikeyPrefix = "Bearer ";
-  if(instance.config.apiKey.substr(0, apikeyPrefix.length) !== apikeyPrefix ) {
-    instance.config.apiKey = apikeyPrefix + instance.config.apiKey;
-
+  if(instance.config.apiKey) {
+    var apikeyPrefix = "Bearer ";
+    if(instance.config.apiKey.substr(0, apikeyPrefix.length) !== apikeyPrefix ) {
+      instance.config.apiKey = apikeyPrefix + instance.config.apiKey;
+    }
   }
 
   var me = this;
@@ -75,8 +76,7 @@ var Raptor = function (config) {
   this.Promise = Promise;
 
   this.newObject = function (data) {
-    var obj = new ServiceObject(data);
-    obj.setContainer(instance);
+    var obj = new ServiceObject(data, instance);
     return obj;
   };
 
