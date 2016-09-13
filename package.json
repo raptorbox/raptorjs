@@ -28,8 +28,7 @@
     "event-emitter": "^0.3.4",
     "lodash": "^4.13.1",
     "mqtt": "*",
-    "request": "^2.55.0",
-    "stompjs": "*"
+    "request": "^2.55.0"
   },
   "devDependencies": {
     "babel-core": "^6.13.2",
