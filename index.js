@@ -31,6 +31,8 @@ var Raptor = function (config) {
 
   var defaultConfig = {
     apiKey: null,
+    username: null,
+    password: null,
     url: "https://api.raptorbox.eu",
     debug: false
   };
@@ -70,7 +72,7 @@ var Raptor = function (config) {
   /**
    * Return a API client instance
    */
-  this.client = client.create(this.config);
+  this.client = client.create(this);
 
   // add Promise reference
   this.Promise = Promise;
@@ -162,6 +164,14 @@ var Raptor = function (config) {
   this.fromJSON = function (json) {
     if(typeof json === 'string') json = JSON.parse(json);
     return instance.newObject(json);
+  };
+
+
+  // Auth related API
+  this.auth = require('./lib/auth/index')(this);
+
+  this.getUser = function(info) {
+    return instance.auth.getUser(info)
   };
 
 };
