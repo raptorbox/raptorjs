@@ -174,6 +174,14 @@ var Raptor = function (config) {
     return instance.auth.getUser(info)
   };
 
+  this.setUser = function(user) {
+    return instance.auth.setUser(user)
+  };
+
+  this.setToken = function(token) {
+    return instance.auth.setToken(token)
+  };
+
 };
 
 module.exports = Raptor;
