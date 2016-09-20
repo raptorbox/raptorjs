@@ -168,6 +168,10 @@ var Raptor = function (config) {
 
 
   // Auth related API
+  var _authBasePath = this.config.authBasePath === undefined ? '/auth' : this.config.authBasePath;
+  this.authBasePath = function(u) {
+    return _authBasePath + u;
+  }
   this.auth = require('./lib/auth/index')(this);
 
   this.getUser = function(info) {
