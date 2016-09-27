@@ -172,6 +172,7 @@ var Raptor = function (config) {
   this.authBasePath = function(u) {
     return _authBasePath + u;
   }
+
   this.auth = require('./lib/auth/index')(this);
 
   this.getUser = function(info) {
