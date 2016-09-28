@@ -59,8 +59,6 @@ var Raptor = function (config) {
     }
   }
 
-  var me = this;
-
   this.isBrowser = (typeof window !== 'undefined');
 
   if(this.isBrowser) {
