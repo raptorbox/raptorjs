@@ -166,7 +166,6 @@ var Raptor = function (config) {
     return instance.newObject(json);
   };
 
-
   // Auth related API
   var _authBasePath = this.config.authBasePath === undefined ? '/auth' : this.config.authBasePath;
   this.authBasePath = function(u) {
@@ -177,6 +176,10 @@ var Raptor = function (config) {
 
   this.getUser = function(info) {
     return instance.auth.getUser(info)
+  };
+
+  this.currentUser = function() {
+    return instance.auth.currentUser() || null;
   };
 
   this.setUser = function(user) {
