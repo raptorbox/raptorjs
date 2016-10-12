@@ -9,7 +9,7 @@ var d = require('debug')("raptorjs:test:api:groups");
 var json = require('./data/device');
 var raptor;
 
-var parent, child, childrenList;
+var parent, child, childrenList = [];
 
 var createObject = function (name) {
   json.name = name || "Object " + (new Date());
@@ -25,11 +25,21 @@ describe('raptor', function () {
   describe('Object group API', function () {
 
     it('should add an object as children', function () {
-      this.timeout(3500);
+      this.timeout(10000);
       return Promise.join(createObject(), createObject(), function (p, c) {
+
         d("Created parent %s and child %s", p.id, c.id)
+
         parent = p;
         child = c;
+
+        assert.isNotNull(p)
+        assert.isObject(p)
+
+        assert.isNotNull(c)
+        assert.isObject(c)
+
+        childrenList.push(child)
         return Promise.resolve()
       })
         .then(function () {
@@ -44,14 +54,16 @@ describe('raptor', function () {
     });
 
     it('should set a list of objects as children', function () {
+      this.timeout(10000);
       return Promise.join(createObject(), createObject(), createObject(), function (child1, child2, child3) {
-        d("Created %s,%s,%s", child1.id, child2.id, child3.id);
+        d("Created %s, %s, %s", child1.id, child2.id, child3.id);
         child = child3
-        return parent.setChildren([child1, child2, child3]);
+        childrenList = [child1, child2, child3]
+        return parent.setChildren(childrenList);
       })
         .then(function (children) {
           d("Children list is %s len", children.length);
-          assert.equal(children.length, 3)
+          assert.equal(children.length, childrenList.length)
           d("Searching for id %s", child.id);
           assert.equal(children.filter(o => {
             return o.id === child.id
@@ -60,11 +72,12 @@ describe('raptor', function () {
     });
 
     it('should remove an object from the list of children', function () {
+      this.timeout(10000);
+      d("removing %s", child.id)
       return parent.removeChild(child)
         .then(function (children) {
-          assert.equal(children.filter(o => {
-            return o.id === child.id
-          }).length, 0)
+          d("Got children list %s", children.map((c)=>c.id));
+          assert.equal(children.filter(o => o.id === child.id).length, 0)
         });
     });
 
