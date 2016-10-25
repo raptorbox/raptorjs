@@ -27,7 +27,7 @@
     "debug": "^2.2.0",
     "event-emitter": "^0.3.4",
     "lodash": "^4.13.1",
-    "mqtt": "*",
+    "mqtt": "^2.0.1",
     "request": "^2.55.0"
   },
   "devDependencies": {
