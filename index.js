@@ -191,5 +191,17 @@ var Raptor = function (config) {
 };
 
 module.exports = Raptor;
-module.exports.RecordSet = require("./lib/model/RecordSet");
-module.exports.ResultSet = require("./lib/model/ResultSet");
+module.exports.permissions = {
+  CREATE:         "create",
+  WRITE:          "write",
+  UPDATE:         "update",
+  DELETE:         "delete",
+  ADMINISTRATION: "administration",
+  PUSH:           "push",
+  PULL:           "pull",
+  SUBSCRIBE:      "subscribe",
+  EXECUTE:        "execute",
+  LIST:           "list",
+}
+module.exports.RecordSet = require("./lib/model/RecordSet")
+module.exports.ResultSet = require("./lib/model/ResultSet")

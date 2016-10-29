@@ -77,7 +77,7 @@ describe('raptor', function () {
       return parent.removeChild(child)
         .then(function (children) {
           d("Got children list %s", children.map((c)=>c.id));
-          assert.equal(children.filter(o => o.id === child.id).length, 0)
+          assert.equal(children.length, childrenList.length-1)
         });
     });
 
