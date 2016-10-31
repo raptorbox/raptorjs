@@ -26,13 +26,10 @@ var createUser = (name) => {
 }
 
 describe('raptor', function () {
-
-
   describe('Object access delegation', function () {
+    it('should allow direct access', function () {
 
-    it('should give PUSH perm to another user', function () {
-
-      this.timeout(100000000);
+      this.timeout(5000);
 
       r = new Raptor(config);
 
@@ -125,7 +122,7 @@ describe('raptor', function () {
           var mymsg = "data from u2"
 
           var o1a_u2 = objs.r2.newObject(objs.o1a.toJSON());
-          o1a_u2.stream("test")
+          return o1a_u2.stream("test")
             .push({
               num: 1,
               bool: true,
@@ -154,6 +151,99 @@ describe('raptor', function () {
             })
 
         })
+    })
+    it('should gain access from parent permissions', function () {
+
+      this.timeout(5000);
+
+      r = new Raptor(config);
+
+
+      return Promise.join(createUser("u1"), createUser("u2"), (u1, u2) => {
+        return Promise.resolve({
+          u1,
+          u2
+        })
+      })
+        .then(function (objs) {
+
+          dbg("got u1 %s and u2 %s", objs.u1.uuid, objs.u1.uuid)
+
+          var cfg1 = {
+            url: config.url,
+            username: objs.u1.username,
+            password: userPasswd,
+          }
+          var r1 = new Raptor(cfg1)
+
+          var cfg2 = {
+            url: config.url,
+            username: objs.u2.username,
+            password: userPasswd,
+          }
+          var r2 = new Raptor(cfg2)
+
+          return Promise.join(createObject(r1), createObject(r1), function (o1a, o1b) {
+            return Promise.join(o1a.addChild(o1b), function () {
+              return Promise.resolve({
+                o1a,
+                o1b,
+                r1,
+                r2,
+                u1: objs.u1,
+                u2: objs.u2,
+              })
+            })
+          })
+        })
+        .then(function (objs) {
+          dbg("U1 allow PUSH,PULL access to U2 on O1A (parent object)")
+          return objs.o1a.permissions.set(objs.u2, [
+            Raptor.permissions.PUSH,
+            Raptor.permissions.PULL
+          ])
+            .then(function () {
+              return Promise.resolve(objs)
+            })
+        })
+        .then(function (objs) {
+
+          dbg("Checking if u2 can push data to child object")
+
+          var mymsg = "data from u2"
+
+          var o1b_u2 = objs.r2.newObject(objs.o1b.toJSON());
+          return o1b_u2.stream("test")
+            .push({
+              num: 1,
+              bool: true,
+              spatial: [11, 45],
+              text: mymsg,
+            })
+            .then(function () {
+              dbg("Stored data by u2")
+              return new Promise(function (resolve, reject) {
+
+                dbg("Wait to check for data")
+                setTimeout(function () {
+                  dbg("Checking if u1 can read data from u2")
+                  objs.o1b.stream("test")
+                    .lastUpdate()
+                    .then(function (data) {
+                      dbg("Got data: %j", data)
+                      dbg("Msg: %j", data.channels.text)
+                      if(data.channels.text === mymsg)
+                        resolve(objs)
+                      else
+                        reject(new Error("Message mismatch"))
+                    })
+                }, 1000)
+              });
+            })
+
+        })
+
+
     })
   })
 })
