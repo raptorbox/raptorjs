@@ -78,7 +78,7 @@ The minimal configuration required is the apiKey to access the API.
 
 Login with user and password (will fetch a session apiKey automatically)
 
-```
+```javascript
 var raptor2 = new Raptor({
   username: "admin",
   password: "admin"
@@ -89,7 +89,7 @@ var raptor2 = new Raptor({
 
 ## List all Objects
 
-```
+```javascript
 raptor.list()
 
     .then(function(list) {
@@ -109,7 +109,7 @@ raptor.list()
 
 Load all the Objects in the list.
 
-```
+```javascript
 raptor.list().map(raptor.load).then(function(list) {
     // list is an array containing ServiceObject instances
     list.forEach(function(so) {
@@ -120,7 +120,7 @@ raptor.list().map(raptor.load).then(function(list) {
 
 Get the last inserted data from an Object
 
-```
+```javascript
 var id = "<object-id>"
 var streamName = "position"
 
@@ -135,7 +135,7 @@ raptor.load(id).then(function(obj) {
 
 Get a list of data from an Object
 
-```
+```javascript
 var id = "<object-id>"
 raptor.load(id).then(function(obj) {
     // return a Promise to use further chainability
@@ -159,7 +159,7 @@ Delete an object with `raptor.delete(objectId)`
 
 Delete all the objects instances with
 
-```
+```javascript
 raptor.list().map(raptor.delete).then(function() {
     console.log("All gone");
 })
@@ -169,7 +169,7 @@ raptor.list().map(raptor.delete).then(function() {
 
 To perform a search at least one option is required, multiple option will be AND-ed together
 
-```
+```javascript
 var params = {
   query: "*berry", // Free-textquery, use * for wildcard
   name: "drone", // match any name containing `drone`
@@ -192,7 +192,7 @@ raptor.search(params, limit, offset).then(function(list) {
 
 The `position` stream will keep track of the movement of the drone.
 
-```
+```javascript
 var drone = {
    "name": "Drone",
    "description": "My amazing drone",
@@ -217,7 +217,7 @@ var drone = {
 
 Create the drone Object in Raptor
 
-```
+```javascript
 raptor.create(drone)
     .then(function(drone) {
         // drone is the new ServiceObject create
@@ -234,7 +234,7 @@ raptor.create(drone)
 
 First you have to select the stream you want to use, `position` in our case, and send the data with the `push` method.
 
-```
+```javascript
 drone.stream('position').push({
     latitude: 11.234,
     longitude: 45.432
@@ -245,7 +245,7 @@ drone.stream('position').push({
 
 Let's load an instance of a Drone from it's definition
 
-```
+```javascript
 var soid = '<object-id>';
 raptor.load(soid)
   .then(function(drone) {
@@ -258,7 +258,7 @@ raptor.load(soid)
 
 The returned value is a `ResultSet` object which expose some simplified methods to use the data from the stream
 
-```
+```javascript
 // paging support
 var offset = 0,
     limit = 500
@@ -299,7 +299,7 @@ Available search types are
 
 Search for data in a stream matching a numeric range constrain
 
-```
+```javascript
 drone.stream('stream name').searchByNumber("channel name", { from: 'val1', to: 'val2' });
 drone.stream('stream name').searchByNumber("channel name", val_from, val_to });
 ```
@@ -308,7 +308,7 @@ drone.stream('stream name').searchByNumber("channel name", val_from, val_to });
 
 Search for data in a time range, creation date (`lastUpdate`) value will be used to match the search
 
-```
+```javascript
 // timeFrom / timeTo can be any value readable as a javascript `Date`
 drone.stream('stream name').searchByTime(timeFrom, timeTo);
 drone.stream('stream name').searchByTime("Tue May 13 2014 10:21:18 GMT+0200 (CEST)", new Date());
@@ -318,7 +318,7 @@ drone.stream('stream name').searchByTime("Tue May 13 2014 10:21:18 GMT+0200 (CES
 
 Search for a matching value in a provided channel
 
-```
+```javascript
 drone.stream('stream name').searchByText("channel name", "string to search");
 ```
 
@@ -328,7 +328,7 @@ Search by a delimiting [bounding box](http://en.wikipedia.org/wiki/Minimum_bound
 
 This search type will look to match a channel named `location` with a geojson value. [See API docs](http://docs.servioticypublic.apiary.io/#dataqueries)
 
-```
+```javascript
 drone.stream('stream name').searchByBoundingBox([
     // upper point
     { latitude: '', longitude: '' },
@@ -341,7 +341,7 @@ drone.stream('stream name').searchByBoundingBox([
 
 Search data by distance
 
-```
+```javascript
 // default unit is km
 drone.stream('stream name').searchByDistance({ latitude: 11,longitude: 46 }, 10);
 
@@ -355,7 +355,7 @@ To combine multiple filters
 
 _Notice_ that `distance` is incompatible with `bbox`, if both provided `bbox` will be used
 
-```
+```javascript
 drone.stream('stream name').search({
     distance: {
         position: { latitude: 11, longitude: 46 },
@@ -404,7 +404,7 @@ Those configuration are automatically taken from the configuration object provid
 
 Get realtime updates from data streams
 
-```
+```javascript
 drone.stream('stream name').subscribe(function(data) {
     console.log("Stream updated!");
     console.log(data);
@@ -413,7 +413,7 @@ drone.stream('stream name').subscribe(function(data) {
 
 To stop listening
 
-```
+```javascript
 drone.stream('stream name').unubscribe(); // .then().catch().finally()
 ```
 
@@ -421,7 +421,7 @@ drone.stream('stream name').unubscribe(); // .then().catch().finally()
 
 In some case could be useful to receive all the notifications available, to do so use listen to the `data` event on the ServiceObject
 
-```
+```javascript
 // register to updates
 drone.subscribe(function(event) {
   console.log("Received event %j", event);
@@ -440,7 +440,7 @@ To invoke an actuation use the `invoke` method and provide additional parameters
 
 Note that the argument passed to `invoke` **must** be a string, so to send JSON take care of serializing it accordingly
 
-```
+```javascript
 var body = JSON.stringify({ exposure: 'high', blur: 0.2 }); // must be a string!
 drone.action('take-photo').invoke(body)
 ```
@@ -449,7 +449,7 @@ drone.action('take-photo').invoke(body)
 
 On the device side you can listen for specific actions and implement actuations on their arrival.
 
-```
+```javascript
 drone.action("take-photo").listen(function(id, raw) {
     // parse content
     var params = JSON.parse(raw)
