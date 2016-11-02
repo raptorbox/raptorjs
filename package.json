@@ -1,17 +1,16 @@
 {
   "name": "raptor",
   "version": "1.0.0",
-  "description": "Raptor SDK",
+  "description": "Raptor javascript sdk",
   "homepage": "https://github.com/muka/raptorjs",
-  "author": "Luca Capra",
-  "license": "Apache 2",
+  "author": "Luca Capra <luca.capra@create-net.org>",
+  "license": "Apache-2.0",
   "main": "index.js",
   "directories": {
     "test": "test"
   },
   "scripts": {
-    "test": "node_modules/mocha/bin/mocha test/*.test.js",
-    "jsdoc": "jsdoc ./ -c=jsdoc.json -l -r"
+    "test": "./node_modules/mocha/bin/mocha test/*.test.js"
   },
   "keywords": [
     "raptor",
@@ -26,6 +25,7 @@
     "bluebird": "^3.4.0",
     "debug": "^2.2.0",
     "event-emitter": "^0.3.4",
+    "jsdoc": "^3.4.2",
     "lodash": "^4.13.1",
     "mqtt": "^2.0.1",
     "request": "^2.55.0"
@@ -36,6 +36,7 @@
     "chai": "^3.5.0",
     "eslint": "^3.6.1",
     "eslint-plugin-react": "^6.3.0",
+    "jsdoc": "^3.4.2",
     "json-loader": "^0.5.4",
     "mocha": "^2.5.3",
     "webpack": "^1.13.1"

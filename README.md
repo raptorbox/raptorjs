@@ -1,63 +1,76 @@
-raptor.js
-===
+# raptor.js
 
 Raptor IoT broker javascript SDK
 
-#Topics
+# Topics
 
 - [Installation](#installation)
-    - [Node.js](#nodejs)
-    - [Browser](#browser)
+
+  - [Node.js](#nodejs)
+  - [Browser](#browser)
+
 - [Library configuration](#library-configuration)
+
 - [Example usage](#example-usage)
-    - [List all Service Objects](#list-all-service-objects)
-    - [Search for Service Objects](#search-for-service-objects)
-    - [Create a Service Object](#create-a-service-object)
-    - [Load a Service Object definition](#load-a-service-object-definition)
-    - [Sending data update](#sending-data-update)
-    - [Loading a Service Object by ID](#loading-a-service-object-by-id)
-    - [Retrieving data from a Service Object](#retrieving-data-from-a-service-object)
-    - [Search for data in a Stream](#search-for-data-in-a-stream)
-        - [Numeric range](#numeric-range)
-        - [Time range](#time-range)
-        - [Match](#match)
-        - [Bounding box](#bounding-box)
-        - [Distance](#distance)
+
+  - [List all Objects](#list-all-service-objects)
+  - [Search for Objects](#search-for-service-objects)
+  - [Create a Object](#create-a-service-object)
+  - [Load a Object definition](#load-a-service-object-definition)
+  - [Sending data update](#sending-data-update)
+  - [Loading a Object by ID](#loading-a-service-object-by-id)
+  - [Retrieving data from a Object](#retrieving-data-from-a-service-object)
+  - [Search for data in a Stream](#search-for-data-in-a-stream)
+
+    - [Numeric range](#numeric-range)
+    - [Time range](#time-range)
+    - [Match](#match)
+    - [Bounding box](#bounding-box)
+    - [Distance](#distance)
+    - [Combining searches](#combining-searches)
+
 - [Getting realtime updates](#getting-realtime-updates)
-    - [Listening for updates to a stream](#listening-for-updates-to-a-stream)
-    - [Listening for all the updates](#listening-for-all-the-updates)
+
+  - [Connecting to the broker](#connecting-to-the-broker)
+  - [Listening for updates to a stream](#listening-for-updates-to-a-stream)
+  - [Listening for all the updates](#listening-for-all-the-updates)
+
 - [Actuations](#actuations)
-    - [Invoking an actuation](#invoking-an-actuation)
-    - [Listening for actuations](#listening-for-actuations)
+
+  - [Invoking an actuation](#invoking-an-actuation)
+  - [Listening for actuations](#listening-for-actuations)
+
 - [Additional notes](#additional-notes)
-    - [Async impl](#async-impl)
-    - [API support](#api-support)
+
+  - [Async impl](#async-impl)
+  - [API support](#api-support)
+
 - [Tests](#tests)
+
 - [Contributing](#contributing)
 - [Docs](#docs)
 - [License](#license)
 - [Changelog](#Changelog)
 
----
+--------------------------------------------------------------------------------
 
-#Installation
+# Installation
 
-##Node.js
+## Node.js
 
 Install the module from the git repository
 
-` npm i muka/raptorjs`
+`npm i muka/raptorjs`
 
 and then import it in your code
 
 `var Raptor = require('raptor')`
 
-
-##Browser
+## Browser
 
 The library is configured to works with webpack. To generate an build run `webpack` inside the repository directory
 
-#Library configuration
+# Library configuration
 
 The minimal configuration required is the apiKey to access the API.
 
@@ -72,13 +85,13 @@ var raptor2 = new Raptor({
 });
 ```
 
-#Example usage
+# Example usage
 
-##List all Service Objects
+## List all Objects
 
 ```
-
 raptor.list()
+
     .then(function(list) {
         console.info("List loaded, %s elements", list.length);
     })
@@ -87,14 +100,14 @@ raptor.list()
     .catch(function(e) {
         console.warn("An error occured!");
     })
+
     // .finally is optional too, will run after the request is completed (either if failed)
     .finally(function() {
         console.log("Done");
     });
-
 ```
 
-Load all the Service Objects in the list.
+Load all the Objects in the list.
 
 ```
 raptor.list().map(raptor.load).then(function(list) {
@@ -105,18 +118,34 @@ raptor.list().map(raptor.load).then(function(list) {
 })
 ```
 
-Get the data from all the Service Objects in the list
+Get the last inserted data from an Object
 
 ```
+var id = "<object-id>"
+var streamName = "position"
+
 raptor.load(id).then(function(obj) {
     // return a Promise to use further chainability
-    return obj.stream("location").pull();
+    return obj.stream(streamName).lastUpdate();
+})
+.then(function(record) {
+  console.log("Got data: %j", record.toJSON())
+})
+```
+
+Get a list of data from an Object
+
+```
+var id = "<object-id>"
+raptor.load(id).then(function(obj) {
+    // return a Promise to use further chainability
+    return obj.stream("position").pull();
 })
 .then(function(result) {
     // result contains a list of records
     result.data.forEach(function(record) {
         console.log( "Location data for %s: %j",
-            record.getStream() // Stream reference
+            record.stream() // Stream reference
                     .getServiceObject() // ServiceObject reference
                       .id ,
             record.toJSON() // transform the object to a plain JSON object
@@ -128,21 +157,22 @@ raptor.load(id).then(function(obj) {
 
 Delete an object with `raptor.delete(objectId)`
 
-Delete all the objects definition with
+Delete all the objects instances with
+
 ```
 raptor.list().map(raptor.delete).then(function() {
     console.log("All gone");
 })
 ```
 
-##Search for Service Objects
+## Search for Objects
 
-To performa a search at least one option is required, multiple option will be AND-ed together
+To perform a search at least one option is required, multiple option will be AND-ed together
 
 ```
 var params = {
   query: "*berry", // Free-textquery, use * for wildcard
-  name: "drone", // match any title containing `drone` work
+  name: "drone", // match any name containing `drone`
   description: "drone",
   customFields: {
      model: "a4b2788"
@@ -150,187 +180,112 @@ var params = {
 };
 
 // paging support
-var limit = 1000,
-    offset = 10;
+var limit = 1000, // get 1000 results
+    offset = 10; // starting from record 10
 
 raptor.search(params, limit, offset).then(function(list) {
-    console.log("Found %s", list.length);
+    console.log("Found %s", list.size());
 })
 ```
 
-##Create a Service Object
+## Create a Object
 
-Follows a pseudo drone object definition
-
-The `position` stream will keep track of the movement of the drone
+The `position` stream will keep track of the movement of the drone.
 
 ```
-var droneDefinition = {
+var drone = {
    "name": "Drone",
    "description": "My amazing drone",
    "streams": {
         "position": {
-            "location": "geo_point"
-            "altitude": "number",
+            "location": "geo_point" // a geo-point object
+            "altitude": "number", // a number
+        },
+        "sensing": {
+          "light":    "number",
+          "alarm":    "boolean"
+          "message":  "string"
         }
     },
+    "actions": [ "take-photo", "beep" ],
     "customFields": {
         model: 'drone-001',
         colors: ['red', 'blue']
-    },
-    "actions": [
-      "take-photo", "beep"
-    ]
+    }    
 }
 ```
 
-Create the drone Service Object on the backend
+Create the drone Object in Raptor
 
 ```
-
-raptor.create(droneDefinition)
+raptor.create(drone)
     .then(function(drone) {
-
         // drone is the new ServiceObject create
         console.info("Drone ServiceObject created, id" + drone.id);
         console.info(drone.toString());
-
         // see below how to use the drone object to send and receive data
-
     }).catch(function(e) {
-
         console.warn("An error occured!");
-        console.error(e);
-
+        return raptor.Promise.reject(e);
     });
-
-
 ```
 
-##Load a Service Object definition
+## Sending data update
 
-The json definition can be stored in the `./definitions` folder (eg `./definitions/drone.json`)
-The definition path can be specified either as a path eg. `../so/definitions/drone.json`
-
-```
-// use just the json filename
-raptor.getDefinition("drone")
-    .then(raptor.create) // enjoy Promise
-    .then(function(drone) {
-        console.log("Drone SO loaded!");
-    });
+First you have to select the stream you want to use, `position` in our case, and send the data with the `push` method.
 
 ```
-
-##Sending data update
-
-First you have to select the stream you want to use, `location` in our case, and the send the data with the `push` method.
-
-The first argument is a list of key/value pair as channel name / channel value;
-
-The second argument (optional, default is set to now) is a readable date value for the channels data to send
-
-```javascript
-
-drone.getStream('location').push({
+drone.stream('position').push({
     latitude: 11.234,
     longitude: 45.432
-}, new Date()).then(successCallback);
-
+})
 ```
 
-##Loading a Service Object by ID
+## Loading an object by ID
 
-Imagine now to work on a mobile application to control the drone.
+Let's load an instance of a Drone from it's definition
 
 ```
-var soid = '<ServiceObject id>';
+var soid = '<object-id>';
 raptor.load(soid)
-    .then(function(drone) {
-
-        // drone is the new ServiceObject
-        console.info("Drone ServiceObject created, id" + drone.id);
-        console.info(drone.toString());
-
-    })
-//  .catch(fn)
-//  .finally(fn)
-    ;
+  .then(function(drone) {
+      console.info("Drone loaded, id %s", drone.id);
+      console.info(drone.toJSON());
+  })
 ```
 
-##Retrieving data from a Service Object
+## Retrieving data from an object
 
-Load the drone Service Object by its ID (or load the list and search for it)
-
-The returned value is a `DataBag` object which expose some simplified methods to use the data from the stream
+The returned value is a `ResultSet` object which expose some simplified methods to use the data from the stream
 
 ```
+// paging support
+var offset = 0,
+    limit = 500
 
-drone.getStream("location")
-    .pull().then(function(data) {
+drone.stream("position")
+    .pull(offset, limit)
+      .then(function(result) {
 
-        console.log("Data for stream loaded " + data.size());
+        console.log("Data size %s", result.size());
 
-        // iterate results
-        while(data.next()) {
-            // current return the data stored at the position of the internal cursor
-            var value = data.current();
-            console.log("Data loaded " + value.get("latitude") + ", " + value.get("longitude"));
-        }
+        //Data is stored in `result.data`
 
-        // Stream reference
-        var StreamRef = data.container();
-        // ServiceObject reference
-        var ServiceObjectRef = StreamRef.container();
+        //Get the Stream object reference
+        var stream = data.stream()
 
-        console.log("Data for " + data.container().container().name + "." + data.container().name);
-        // will print `Data for Drone.location`
+        // Drone object reference
+        var object = data.stream().getServiceObject()
 
-        // count the data list
-        var count = data.size();
-
-        // get the current index (position in the list)
-        var index = data.index();
-
-        // reset internal cursor
-        // data.index() will return 0
-        data.reset();
-
-        // first data stored
-        data.first();
-
-        // last data stored
-        data.last();
-
-        // get data at a certain index
-        var item = data.at(index);
-
-        console.log(item);
-        // the original format of the data
-        // { channels: { latitude: { current-value: 'val' } } }
-
-        console.log(item.asObject());
-        // simple js object with the data
-        // { latitude: 'val', longitude: 'val' }
-
-        // shorthand to get the values
-        var lat = item.get("latitude"),
-            lng = item.get("longitude");
-        console.log( lat , lng );
-
-        //get a value from the list
-        // data.get(index, channel_name, defaultValue)
-        var lng1 = data.get(data.size()-1, "longitude", -1);
-
-        console.log( (lng === lng1) ? "It works!" : "Something went wrong.." );
+        // get RecordSet at a certain index
+        var record = data.get(index);
 
     });
-
 ```
 
-##Search for data in a Stream
+## Search for data in a Stream
 
-Methods to search for data in a stream. All search method returns promises
+Methods to search for data in a stream
 
 Available search types are
 
@@ -340,73 +295,41 @@ Available search types are
 - [Bounding box](#bounding-box)
 - [Distance](#distance)
 
-###Numeric Range
+### Numeric Range
 
 Search for data in a stream matching a numeric range constrain
 
 ```
-drone.getStream('stream name').searchByNumber("channel name", { from: 'val1', to: 'val2' });
-drone.getStream('stream name').searchByNumber("channel name", val_from, val_to });
+drone.stream('stream name').searchByNumber("channel name", { from: 'val1', to: 'val2' });
+drone.stream('stream name').searchByNumber("channel name", val_from, val_to });
 ```
 
-To combine with other filters
-```
-drone.getStream('stream name').search({
-    numeric: {
-        channel: 'channel name',
-        from: 'val1'
-        to: 'val2'
-    }
-});
-```
-
-###Time Range
+### Time Range
 
 Search for data in a time range, creation date (`lastUpdate`) value will be used to match the search
 
 ```
 // timeFrom / timeTo can be any value readable as a javascript `Date`
-drone.getStream('stream name').searchByTime(timeFrom, timeTo);
-drone.getStream('stream name').searchByTime("Tue May 13 2014 10:21:18 GMT+0200 (CEST)", new Date());
+drone.stream('stream name').searchByTime(timeFrom, timeTo);
+drone.stream('stream name').searchByTime("Tue May 13 2014 10:21:18 GMT+0200 (CEST)", new Date());
 ```
 
-To combine with other filters
-```
-drone.getStream('stream name').search({
-    time: {
-        from: 1368433278000,
-        to:   1399969278000
-    }
-});
-```
-
-###Match
+### Match
 
 Search for a matching value in a provided channel
 
 ```
-drone.getStream('stream name').searchByText("channel name", "string to search");
+drone.stream('stream name').searchByText("channel name", "string to search");
 ```
 
-To combine with other filters
-```
-drone.getStream('stream name').search({
-    match: {
-        channel: "channel name",
-        string: "string to search"
-    }
-});
-```
-
-###Bounding box
+### Bounding box
 
 Search by a delimiting [bounding box](http://en.wikipedia.org/wiki/Minimum_bounding_box)
 
 This search type will look to match a channel named `location` with a geojson value. [See API docs](http://docs.servioticypublic.apiary.io/#dataqueries)
 
-
 ```
-drone.getStream('stream name').searchByBoundingBox([
+drone.stream('stream name').searchByBoundingBox([
     // upper point
     { latitude: '', longitude: '' },
     // lower point
@@ -414,9 +337,46 @@ drone.getStream('stream name').searchByBoundingBox([
 ]);
 ```
 
-To combine with other filters (incompatible with distance, if both provided `bbox` will be used )
+### Distance
+
+Search data by distance
+
 ```
-drone.getStream('stream name').search({
+// default unit is km
+drone.stream('stream name').searchByDistance({ latitude: 11,longitude: 46 }, 10);
+
+// specifying a unit
+drone.stream('stream name').searchByDistance({ latitude: 11,longitude: 46 }, 1000, 'm');
+```
+
+### Combining searches
+
+To combine multiple filters
+
+_Notice_ that `distance` is incompatible with `bbox`, if both provided `bbox` will be used
+
+```
+drone.stream('stream name').search({
+    distance: {
+        position: { latitude: 11, longitude: 46 },
+        // or
+        // position: [11, 46],
+        value: 1,
+        unit: 'km'
+    },
+    numeric: {
+        channel: 'channel name',
+        from: 'val1'
+        to: 'val2'
+    },
+    time: {
+        from: 1368433278000,
+        to:   1399969278000
+    },
+    match: {
+        channel: "channel name",
+        string: "string to search"
+    },
     bbox: {
         coords: [
             // upper point
@@ -430,125 +390,85 @@ drone.getStream('stream name').search({
 });
 ```
 
-###Distance
+# Getting realtime updates
 
-Search data by distance
+Updates are delivered over MQTT subscriptions
 
-```
-// default unit is km
-drone.getStream('stream name').searchByDistance({ latitude: 11,longitude: 46 }, 10);
+## Connecting to the broker
 
-// specifying a unit
-drone.getStream('stream name').searchByDistance({ latitude: 11,longitude: 46 }, 1000, 'm');
-```
+Connection can be done by providing the `username` and `password` or with an empty `username` and a valid apiKey as the `password`.
 
-To combine with other filters (incompatible with bbox, if both provided `bbox` will be used )
+Those configuration are automatically taken from the configuration object provided by the library
 
-```
-drone.getStream('stream name').search({
-    distance: {
-        position: { latitude: 11, longitude: 46 },
-        // or
-        // position: [11, 46],
-        value: 1,
-        unit: 'km'
-    }
-});
+## Listening for updates to a stream
+
+Get realtime updates from data streams
 
 ```
-
-#Getting realtime updates
-
-Realtime updates works __only__ with _mqtt_ and _stomp_ transport types as two-way communication is available.
-To use `http` please see the subproject `examples/subscriptions` to setup a base http server to receive subscriptions
-
-##Listening for updates to a stream
-
-It is possible to get real time updates for a specific stream by subscribinf to the stream
-
-```
-drone.getStream('stream name').subscribe(function(data) {
+drone.stream('stream name').subscribe(function(data) {
     console.log("Stream updated!");
     console.log(data);
-}) // .then().catch().finally()
+})
 ```
 
 To stop listening
 
 ```
-drone.getStream('stream name').unubscribe(); // .then().catch().finally()
+drone.stream('stream name').unubscribe(); // .then().catch().finally()
 ```
 
-Under the hood, the library will take care to retrieve a fresh list of available subscriptions, create a new `pubsub` subscription
-if not already available and subscribe to the dedicated topic.
-
-##Listening for all the updates
+## Listening for events
 
 In some case could be useful to receive all the notifications available, to do so use listen to the `data` event on the ServiceObject
 
 ```
 // register to updates
-drone.on("data", function(data, raw) {
-    console.log("Received data ", data);
-    console.log("Raw message was ", raw);
+drone.subscribe(function(event) {
+  console.log("Received event %j", event);
 })
-
-// unregister from updates
-drone.off("data")
-
-
 ```
 
-#Actuations
+Unregister from events with `drone.unsubscribe()`
 
-Actuations allow to perform operations on a Service Object. Actuation need to be specified when creating a Service Object
+# Actuations
 
-###Invoking an actuation
+Actuations allow to perform operations on an Object.
+
+## Invoking an actuation
 
 To invoke an actuation use the `invoke` method and provide additional parameters as argument
 
-Note that the argument passed to `invoke` **must** be a string, so to send JSON take care of serialize
+Note that the argument passed to `invoke` **must** be a string, so to send JSON take care of serializing it accordingly
 
 ```
-
-var body = JSON.stringify({ some: 'params' }); // must be a string!
-drone.getAction('turn-left').invoke(body) // .then().catch().finally()
-
+var body = JSON.stringify({ exposure: 'high', blur: 0.2 }); // must be a string!
+drone.action('take-photo').invoke(body)
 ```
 
-###Listening for actuations
+## Listening for actuations
 
-On the device side you can listen for actions and implement actuations on their arrival.
-
-```
-
-drone.getActions().listen(function(id, params, raw) {
-
-    console.log("Perform actuation %s with params: %s", id, params);
-
-}) // .then().catch().finally()
-
-// or
-// drone.on('actions', function(id, params, raw) {  });
-
+On the device side you can listen for specific actions and implement actuations on their arrival.
 
 ```
+drone.action("take-photo").listen(function(id, raw) {
+    // parse content
+    var params = JSON.parse(raw)
+    console.log("[id: %s] Take a photo with exposure: %j and blur: %s", id, params.exposure, params.blur);
+    // camera.takePhoto(params)
+})
+```
 
-#Contributing
-
-Any help is welcome!
+# Contributing
 
 Feel free to open an issue or contact us to discuss the library status and future development.
 
-#Docs
+# Docs
 
-API docs can be generated using `jsdoc` and will be added to the repository once the library has a stable release.
+API docs can be generated using `jsdoc`
 
-`npm install -g jsdoc`
+`./node_modules/jsdoc/jsdoc.js ./ -c ./jsdoc.json -l -r`
 
-`jsdoc ./`
-
-#License
+# License
 
 Apache2
 
