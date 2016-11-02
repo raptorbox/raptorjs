@@ -60,7 +60,7 @@ Raptor IoT broker javascript SDK
 
 Install the module from the git repository
 
-`npm i muka/raptorjs`
+`npm i raptorbox/raptorjs`
 
 and then import it in your code
 
