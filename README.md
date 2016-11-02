@@ -3,7 +3,7 @@
 Raptor IoT broker javascript SDK
 
 # Topics
-
+- [Introduction](#introduction)
 - [Installation](#installation)
 
   - [Node.js](#nodejs)
@@ -53,6 +53,12 @@ Raptor IoT broker javascript SDK
 - [Changelog](#Changelog)
 
 --------------------------------------------------------------------------------
+
+# Introduction
+
+Raptor.js exposes the feature from the [Raptor](http://github.com/raptorbox/raptor) platform as a convinient javascript API.
+
+Read further for a gentle introduction or jump to the generated [API documentation](http://raptorbox.github.io/raptorjs/)
 
 # Installation
 
