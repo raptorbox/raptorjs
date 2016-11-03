@@ -19,6 +19,10 @@ describe('raptor', function () {
 
   describe('create device', function () {
     it('should create a new object', function () {
+
+      //startup is pig slow :(
+      this.timeout(5000000);
+
       return raptor.create(json)
         .then(function(obj) {
           serviceObject = obj;
@@ -33,10 +37,10 @@ describe('raptor', function () {
   describe('update device', function () {
     it('should update an object streams and actions', function () {
 
-      // it's pig slow :(
-      this.timeout(5000);
+      //startup is pig slow :(
+      this.timeout(5000000);
 
-      if(serviceObject) throw new Error("Object not loaded?");
+      if(!serviceObject) throw new Error("Object not loaded?");
 
       return new Promise(function(resolve, reject) {
         setTimeout(function() {
@@ -56,7 +60,8 @@ describe('raptor', function () {
               assert.equal(json.name, obj.name);
               assert.notEqual(obj.id, null);
               resolve();
-            });
+            })
+            .catch(reject)
         }, 2500);
       });
     });
