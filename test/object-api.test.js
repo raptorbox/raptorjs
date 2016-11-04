@@ -1,11 +1,10 @@
-
 var configFile = "./data/config.json";
 
 var Raptor = require('../index');
 var Promise = require('bluebird');
 
 var assert = require('chai').assert;
-var d = require('debug')("raptorjs:test:api");
+var dbg = require('debug')("raptorjs:test:api");
 
 var json = require('./data/device');
 var raptor;
@@ -24,9 +23,9 @@ describe('raptor', function () {
       this.timeout(5000000);
 
       return raptor.create(json)
-        .then(function(obj) {
+        .then(function (obj) {
           serviceObject = obj;
-          d("Created " + obj.id);
+          dbg("Created " + obj.id);
           assert.equal(json.name, obj.name);
           assert.notEqual(obj.id, null);
           return Promise.resolve();
@@ -42,28 +41,24 @@ describe('raptor', function () {
 
       if(!serviceObject) throw new Error("Object not loaded?");
 
-      return new Promise(function(resolve, reject) {
-        setTimeout(function() {
 
-          serviceObject.actions = [];
+      serviceObject.actions = [];
 
-          serviceObject.setStreams([{
-            name: "mystream",
-            channels: {
-              test: 'number',
-              test1: 'string'
-            }
-          }]);
+      serviceObject.setStreams([{
+        name: "mystream",
+        channels: {
+          test: 'number',
+          test1: 'string'
+        }
+      }]);
 
-          serviceObject.update()
-            .then(function(obj) {
-              assert.equal(json.name, obj.name);
-              assert.notEqual(obj.id, null);
-              resolve();
-            })
-            .catch(reject)
-        }, 2500);
-      });
+      dbg("Updating object: %j", serviceObject.toJSON())
+      return serviceObject.update()
+        .then(function (obj) {
+          assert.equal(json.name, obj.name);
+          assert.notEqual(obj.id, null);
+        })
+
     });
   });
 
