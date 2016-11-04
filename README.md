@@ -1,6 +1,6 @@
 # raptor.js
 
-Raptor IoT broker javascript SDK
+Raptor IoT platform javascript SDK
 
 # Topics
 - [Introduction](#introduction)
