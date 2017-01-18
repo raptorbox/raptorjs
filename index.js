@@ -121,6 +121,9 @@ var Raptor = function (config) {
    * @return {Promise} A promise with the created SO
    */
   this.load = function (id) {
+    if (id == null) {
+      throw new Error("An ID must be provided by load")
+    }
     var obj = instance.newObject({
       id: id,
       name: "unknown"
