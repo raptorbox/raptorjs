@@ -252,8 +252,8 @@ drone.stream('position').push({
 Let's load an instance of a Drone from it's definition
 
 ```javascript
-var soid = '<object-id>';
-raptor.load(soid)
+var objectId = '<object-id>';
+raptor.load(objectId)
   .then(function(drone) {
       console.info("Drone loaded, id %s", drone.id);
       console.info(drone.toJSON());
