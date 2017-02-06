@@ -21,6 +21,8 @@ var _ = require("lodash");
 var Client = require('./lib/client');
 var ServiceObject = require("./lib/model/ServiceObject");
 
+var EventEmitter = require('event-emitter');
+
 /**
  * Raptor SDK wrapper
  *
@@ -201,6 +203,7 @@ var Raptor = function (config) {
   };
 
 };
+EventEmitter(Raptor.prototype);
 
 module.exports = Raptor;
 module.exports.permissions = {
