@@ -17,14 +17,14 @@ var json = require('../data/device');
 var r, user, object;
 
 var testSetPermission = function (newPerms) {
-  return object.permissions.set(user, newPerms)
+  return object.permissions.set('device',user, newPerms)
     .then(function (permissions) {
       assert.isArray(permissions);
       assert.equal(permissions.length, newPerms.length);
       return Promise.resolve(permissions);
     })
     .then(function (perms) {
-      return object.permissions.get(user)
+      return object.permissions.get('device',user)
         .then(function (permissions) {
           d("User %s permissions %j", user.uuid, permissions);
           assert.isArray(permissions);
@@ -67,7 +67,7 @@ describe('raptor auth service', function () {
 
     it('should return empty list of permission', function () {
 
-      return object.permissions.get(user)
+      return object.permissions.get('device',user)
         .then(function (permissions) {
           d("User %s permissions %j", user.uuid, permissions);
 
