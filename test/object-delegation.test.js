@@ -35,7 +35,7 @@ describe('raptor', function () {
   describe('Object access delegation', function () {
     it('should allow direct access', function () {
 
-      this.timeout(500000);
+      this.timeout(5000);
 
       r = new Raptor(config);
 

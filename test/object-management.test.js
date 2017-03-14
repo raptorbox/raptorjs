@@ -21,7 +21,7 @@ describe('raptor', function () {
     it('should create a new object', function () {
 
       //startup is pig slow :(
-      this.timeout(5000);
+      this.timeout(10000);
 
       return raptor.create(json)
         .then(function (obj) {
@@ -33,6 +33,8 @@ describe('raptor', function () {
     });
 
     it('should update an object streams and actions', function () {
+
+      this.timeout(10000);
 
       json.name = "update " + (new Date())
       return raptor.create(json)
