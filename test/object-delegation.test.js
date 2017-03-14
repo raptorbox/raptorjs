@@ -35,7 +35,7 @@ describe('raptor', function () {
   describe('Object access delegation', function () {
     it('should allow direct access', function () {
 
-      this.timeout(5000);
+      this.timeout(500000);
 
       r = new Raptor(config);
 
@@ -94,7 +94,7 @@ describe('raptor', function () {
           dbg("2b fullpath %s/%s", objs.o2b.path, objs.o2b.id);
 
           dbg("U1 allow PUSH,PULL access to U2 on O1A")
-          dbg("u2: %s", objs.u2)
+          dbg("u2: %j", objs.u2)
 
           return objs.o1a.permissions.get(objs.u1).then(function (ownerPerms) {
             dbg("Permissions for u1: %j", ownerPerms)
@@ -248,8 +248,6 @@ describe('raptor', function () {
             })
 
         })
-
-
     })
   })
 })
