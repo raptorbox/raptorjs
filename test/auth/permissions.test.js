@@ -17,14 +17,14 @@ var json = require('../data/device');
 var r, user, object;
 
 var testSetPermission = function (newPerms) {
-  return object.permissions.set('device',user, newPerms)
+  return object.permissions.set( user, newPerms)
     .then(function (permissions) {
       assert.isArray(permissions);
       assert.equal(permissions.length, newPerms.length);
       return Promise.resolve(permissions);
     })
     .then(function (perms) {
-      return object.permissions.get('device',user)
+      return object.permissions.get(user)
         .then(function (permissions) {
           d("User %s permissions %j", user.uuid, permissions);
           assert.isArray(permissions);
@@ -63,11 +63,43 @@ describe('raptor auth service', function () {
 
   });
 
-  describe('permissions API', function () {
+  describe('device level permissions API', function () {
 
     it('should return empty list of permission', function () {
 
-      return object.permissions.get('device',user)
+      return object.permissions.get(user)
+        .then(function (permissions) {
+          d("User %s permissions %j", user.uuid, permissions);
+
+          assert.isArray(permissions);
+          assert.equal(permissions.length, 0);
+
+          return Promise.resolve();
+        });
+    });
+
+    it('should set new permissions', function () {
+      return testSetPermission(["read", "write"]);
+    });
+
+    it('should empty permissions', function () {
+      return testSetPermission([])
+    });
+
+    it('should fail for unknown permission', function () {
+      return testSetPermission(["foobar"]).catch(function(e) {
+        d(e);
+        return Promise.resolve();
+      })
+    });
+
+  });
+
+  describe('token level permissions API', function () {
+
+    it('should return empty list of permission', function () {
+
+      return object.permissions.get('token', user)
         .then(function (permissions) {
           d("User %s permissions %j", user.uuid, permissions);
 

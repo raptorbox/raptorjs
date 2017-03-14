@@ -1,15 +1,20 @@
+/*
+  global describe
+  global before
+  global it
+  global console
+*/
+
 var configFile = "../data/config.json";
 
 var Raptor = require('../../index');
 var Promise = require('bluebird');
 
 var assert = require('chai').assert;
-var d = require('debug')("raptorjs:test:auth:roles");
+// var d = require('debug')("raptorjs:test:auth:roles");
 
-var json = require('../data/device');
 var r;
 var role;
-var serviceObject;
 
 describe('raptor auth service', function () {
 

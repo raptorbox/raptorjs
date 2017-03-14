@@ -1,3 +1,9 @@
+/*
+  global describe
+  global it
+  global console
+*/
+
 var configFile = "./data/config.json";
 
 var Raptor = require('../index');
@@ -90,21 +96,21 @@ describe('raptor', function () {
           dbg("U1 allow PUSH,PULL access to U2 on O1A")
           dbg("u2: %s", objs.u2)
 
-          return objs.o1a.permissions.get('device',objs.u1).then(function (ownerPerms) {
+          return objs.o1a.permissions.get(objs.u1).then(function (ownerPerms) {
             dbg("Permissions for u1: %j", ownerPerms)
 
-            return objs.o1a.permissions.set('device',objs.u2, [Raptor.permissions.PUSH, Raptor.permissions.PULL])
+            return objs.o1a.permissions.set(objs.u2, [Raptor.permissions.PUSH, Raptor.permissions.PULL])
               .then(function (setted) {
 
                 dbg("u2 permissions set, check if valid: %j", setted)
 
-                return objs.o1a.permissions.get('device',objs.u2).then(function (perms) {
+                return objs.o1a.permissions.get(objs.u2).then(function (perms) {
 
                   dbg("Permissions for u2: %j", perms)
 
                   assert.equal(perms.length, setted.length)
 
-                  return objs.o1a.permissions.get('device',objs.u1).then(function (ownerPerms2) {
+                  return objs.o1a.permissions.get(objs.u1).then(function (ownerPerms2) {
                     dbg("Permissions for u1 after all: %j", ownerPerms2)
 
                     assert.equal(ownerPerms.length, ownerPerms2.length)

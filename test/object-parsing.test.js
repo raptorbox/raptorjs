@@ -1,3 +1,9 @@
+/*
+  global describe
+  global before
+  global it
+  global console
+*/
 
 var configFile = "./data/config.json";
 

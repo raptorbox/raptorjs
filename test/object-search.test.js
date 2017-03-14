@@ -1,7 +1,12 @@
+/*
+  global describe
+  global it
+  global console
+*/
+
 var configFile = "./data/config.json";
 
 var Raptor = require('../index');
-var Promise = require('bluebird');
 
 var assert = require('chai').assert;
 var dbg = require('debug')("raptorjs:test:api");
