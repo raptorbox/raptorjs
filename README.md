@@ -3,60 +3,62 @@
 Raptor IoT platform javascript SDK
 
 # Topics
-- [Introduction](#introduction)
-- [Installation](#installation)
 
-  - [Node.js](#nodejs)
-  - [Browser](#browser)
+-   [Introduction](#introduction)
+-   [Installation](#installation)
 
-- [Library configuration](#library-configuration)
+    -   [Node.js](#nodejs)
+    -   [Browser](#browser)
 
-- [Example usage](#example-usage)
+-   [Library configuration](#library-configuration)
 
-  - [List all Objects](#list-all-service-objects)
-  - [Search for Objects](#search-for-service-objects)
-  - [Create a Object](#create-a-service-object)
-  - [Load a Object definition](#load-a-service-object-definition)
-  - [Sending data update](#sending-data-update)
-  - [Loading a Object by ID](#loading-a-service-object-by-id)
-  - [Retrieving data from a Object](#retrieving-data-from-a-service-object)
-  - [Search for data in a Stream](#search-for-data-in-a-stream)
+-   [Example usage](#example-usage)
 
-    - [Numeric range](#numeric-range)
-    - [Time range](#time-range)
-    - [Match](#match)
-    - [Bounding box](#bounding-box)
-    - [Distance](#distance)
-    - [Combining searches](#combining-searches)
+    -   [List all Objects](#list-all-service-objects)
+    -   [Search for Objects](#search-for-service-objects)
+    -   [Create a Object](#create-a-service-object)
+    -   [Load a Object definition](#load-a-service-object-definition)
+    -   [Sending data update](#sending-data-update)
+    -   [Loading a Object by ID](#loading-a-service-object-by-id)
+    -   [Retrieving data from a Object](#retrieving-data-from-a-service-object)
+    -   [Search for data in a Stream](#search-for-data-in-a-stream)
 
-- [Getting realtime updates](#getting-realtime-updates)
+        -   [Numeric range](#numeric-range)
+        -   [Time range](#time-range)
+        -   [Match](#match)
+        -   [Bounding box](#bounding-box)
+        -   [Distance](#distance)
+        -   [Combining searches](#combining-searches)
 
-  - [Connecting to the broker](#connecting-to-the-broker)
-  - [Listening for updates to a stream](#listening-for-updates-to-a-stream)
-  - [Listening for all the updates](#listening-for-all-the-updates)
+-   [Getting realtime updates](#getting-realtime-updates)
 
-- [Actuations](#actuations)
+    -   [Connecting to the broker](#connecting-to-the-broker)
+    -   [Listening for updates to a stream](#listening-for-updates-to-a-stream)
+    -   [Listening for all the updates](#listening-for-all-the-updates)
 
-  - [Invoking an actuation](#invoking-an-actuation)
-  - [Listening for actuations](#listening-for-actuations)
+-   [Actuations](#actuations)
 
-- [Additional notes](#additional-notes)
+    -   [Invoking an actuation](#invoking-an-actuation)
+    -   [Listening for actuations](#listening-for-actuations)
 
-  - [Async impl](#async-impl)
-  - [API support](#api-support)
+-   [Additional notes](#additional-notes)
 
-- [Tests](#tests)
+    -   [Async impl](#async-impl)
+    -   [API support](#api-support)
 
-- [Contributing](#contributing)
-- [Docs](#docs)
-- [License](#license)
-- [Changelog](#Changelog)
+-   [Tests](#tests)
+
+-   [Contributing](#contributing)
+
+-   [Docs](#docs)
+-   [License](#license)
+-   [Changelog](#Changelog)
 
 --------------------------------------------------------------------------------
 
 # Introduction
 
-Raptor.js exposes the feature from the [Raptor](http://github.com/raptorbox/raptor) platform as a convinient javascript API.
+Raptor.js exposes the feature from the [Raptor](http://github.com/raptorbox/raptor) platform as a convenient javascript API.
 
 Read further for a gentle introduction or jump to the generated [API documentation](http://raptorbox.github.io/raptorjs/)
 
@@ -295,11 +297,11 @@ Methods to search for data in a stream
 
 Available search types are
 
-- [Numeric range](#numeric-range)
-- [Time range](#time-range)
-- [Match](#match)
-- [Bounding box](#bounding-box)
-- [Distance](#distance)
+-   [Numeric range](#numeric-range)
+-   [Time range](#time-range)
+-   [Match](#match)
+-   [Bounding box](#bounding-box)
+-   [Distance](#distance)
 
 ### Numeric Range
 
@@ -479,7 +481,7 @@ API docs can be generated using `jsdoc`
 Apache2
 
 ```
-Copyright CREATE-NET
+Copyright FBK/CREATE-NET
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
