@@ -90,34 +90,6 @@ var Raptor = function (config) {
         return obj
     }
 
-  /**
-   * Search for Service Objects.
-   * Example parameters:
-   * 1) free-form query: { query: "some params" }
-   * 2) field params:
-   * {
-   *   name: "Object Name",
-   *   description: "optional description"
-   *   customFields: {
-   *      param1: "value"
-   *   }
-   * }
-   *
-   *
-   * @params Object search parameters
-   * @return {Promise}
-   */
-    this.find = this.search = function (params) {
-        if(typeof params === "string") {
-            params = { search: params }
-        }
-        return instance.client.post("/search", params)
-      .then(function (data) {
-          var json = (typeof data === "string") ? JSON.parse(data) : data
-          return Promise.resolve(json)
-      })
-    }
-
     this.fromJSON = function (json) {
         if(typeof json === "string") json = JSON.parse(json)
         return instance.newObject(json)
@@ -149,6 +121,27 @@ var Raptor = function (config) {
 
     this.profile = require("./lib/profile")(this)
     this.inventory = require("./lib/inventory")(this)
+
+
+
+    /**
+    * Search for Service Objects.
+    * Example parameters:
+    * 1) free-form query: { query: "some params" }
+    * 2) field params:
+    * {
+    *   name: "Object Name",
+    *   description: "optional description"
+    *   properties: {
+    *      param1: "value"
+    *   }
+    * }
+    *
+    *
+    * @params Object search parameters
+    * @return {Promise}
+    */
+    this.find = this.search = (params) => this.inventory.search(params) 
 
     /**
     * Create a Service Object from an object or a WebObject
