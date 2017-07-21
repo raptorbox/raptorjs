@@ -202,6 +202,8 @@ var Raptor = function (config) {
     return instance.auth.setToken(token)
   };
 
+  this.profile = require("./lib/profile")(this)
+
 };
 EventEmitter(Raptor.prototype);
 
