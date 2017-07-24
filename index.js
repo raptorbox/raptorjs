@@ -15,10 +15,6 @@ limitations under the License.
 */
 
 var d = require("debug")("raptorjs:index")
-var Promise = require("bluebird")
-var _ = require("lodash")
-var Client = require("./lib/client")
-var ServiceObject = require("./lib/model/ServiceObject")
 
 var EventEmitter = require("event-emitter")
 
@@ -32,167 +28,75 @@ var EventEmitter = require("event-emitter")
  * @constructor
  * @param {Object} config configuration object
  */
-var Raptor = function (config) {
+class Raptor {
 
-    var instance = this
+    constructor(config) {
 
-  // keep reference to Promise object
-    this.Promise = Promise
+        EventEmitter.call(this)
 
-    var defaultConfig = {
-        apiKey: null,
-        username: null,
-        password: null,
-        url: "https://api.raptorbox.eu",
-        debug: false
-    }
+        this.config = {}
+        this.isBrowser = (typeof window !== "undefined")
 
-    config = config || {}
+        this.permissions = require("./lib/permissions")
+        this.routes = require("./lib/routes")
 
-    if(typeof config === "string") {
-        config = {
-            apiKey: config
+        this.RecordSet = require("./lib/model/RecordSet")
+        this.ResultSet = require("./lib/model/ResultSet")
+
+        const defaultConfig = {
+            apiKey: null,
+            username: null,
+            password: null,
+            url: "https://api.raptorbox.eu",
+            debug: false
         }
-    }
 
-    this.config = {}
-
-    _.each(defaultConfig, function(val, key) {
-        instance.config[key] =
-      (config[key] === undefined) ? val : config[key]
-    })
-
-    if(instance.config.apiKey) {
-        var apikeyPrefix = "Bearer "
-        if(instance.config.apiKey.substr(0, apikeyPrefix.length) !== apikeyPrefix ) {
-            instance.config.apiKey = apikeyPrefix + instance.config.apiKey
+        if(typeof config === "string") {
+            config = {
+                apiKey: config
+            }
         }
+
+        this.config = Object.assign({}, defaultConfig, config)
+        d("Client configuration: %j", this.config)
     }
 
-    this.isBrowser = (typeof window !== "undefined")
-
-    if(this.isBrowser) {
-        d("Running in browser")
+    getConfig() {
+        return this.config
     }
 
-    d("Client configuration: %j", this.config)
-
-  /**
-   * Return a API client instance
-   */
-    this.client = new Client(this)
-
-  // add Promise reference
-    this.Promise = Promise
-
-    this.newObject = function (data) {
-        var obj = new ServiceObject(data, instance)
-        return obj
+    getClient() {
+        if(!this.client) {
+            const Client = require("./lib/Client")
+            this.client = new Client(this)
+        }
+        return this.client
     }
 
-    this.fromJSON = function (json) {
-        if(typeof json === "string") json = JSON.parse(json)
-        return instance.newObject(json)
+    Auth() {
+        if(!this.auth) {
+            const Auth = require("./lib/Auth")
+            this.auth = new Auth(this)
+        }
+        return this.auth
     }
 
-  // Auth related API
-    var _authBasePath = this.config.authBasePath === undefined ? "/auth" : this.config.authBasePath
-    this.authBasePath = function(u) {
-        return _authBasePath + u
+    Profile() {
+        if(!this.profile) {
+            const Profile = require("./lib/Profile")
+            this.profile = new Profile(this)
+        }
+        return this.profile
     }
 
-    this.auth = require("./lib/auth/index")(this)
-
-    this.getUser = function(info) {
-        return instance.auth.getUser(info)
+    Inventory() {
+        if(!this.inventory) {
+            const Inventory = require("./lib/Inventory")
+            this.inventory = new Inventory(this)
+        }
+        return this.inventory
     }
-
-    this.currentUser = function() {
-        return instance.auth.currentUser() || null
-    }
-
-    this.setUser = function(user) {
-        return instance.auth.setUser(user)
-    }
-
-    this.setToken = function(token) {
-        return instance.auth.setToken(token)
-    }
-
-    this.profile = require("./lib/profile")(this)
-    this.inventory = require("./lib/inventory")(this)
-
-
-
-    /**
-    * Search for Service Objects.
-    * Example parameters:
-    * 1) free-form query: { query: "some params" }
-    * 2) field params:
-    * {
-    *   name: "Object Name",
-    *   description: "optional description"
-    *   properties: {
-    *      param1: "value"
-    *   }
-    * }
-    *
-    *
-    * @params Object search parameters
-    * @return {Promise}
-    */
-    this.find = this.search = (params) => this.inventory.search(params) 
-
-    /**
-    * Create a Service Object from an object or a WebObject
-    *
-    * @param {Object} wo ServiceObject compatible definition object or WebObject
-    *
-    * @return {Promise} Promise for the future ServiceObject created
-    * */
-    this.create = (dev) => this.inventory.create(dev)
-
-    /**
-    * Delete a Service Object by id
-    *
-    * @param {String} objectId ServiceObject id
-    *
-    * @return {Promise} Promise for the future result of the operation
-    * */
-    this.delete = (dev) => this.inventory.delete(dev)
-
-    /**
-    * @param {String} id ServiceObject id
-    *
-    * @return {Promise} A promise with the created SO
-    */
-    this.load = this.read = (dev) => this.inventory.read(dev)
-
-    /**
-    * Retrieve all the Service Objects from a given user (identified by the Authorization header).
-    *
-    * @return {Promise}
-    */
-    this.list = () => this.inventory.list()
 
 }
-
-EventEmitter(Raptor.prototype)
 
 module.exports = Raptor
-module.exports.permissions = {
-    CREATE:         "create",
-    WRITE:          "write",
-    READ:           "read",
-    UPDATE:         "update",
-    DELETE:         "delete",
-    ADMINISTRATION: "administration",
-    PUSH:           "push",
-    PULL:           "pull",
-    SUBSCRIBE:      "subscribe",
-    EXECUTE:        "execute",
-    LIST:           "list",
-}
-module.exports.RecordSet = require("./lib/model/RecordSet")
-module.exports.ResultSet = require("./lib/model/ResultSet")
-module.exports.Promise = Promise
