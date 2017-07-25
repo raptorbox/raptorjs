@@ -4,55 +4,53 @@ Raptor IoT platform javascript SDK
 
 # Topics
 
--   [Introduction](#introduction)
--   [Installation](#installation)
+- [Introduction](#introduction)
+- [Installation](#installation)
 
-    -   [Node.js](#nodejs)
-    -   [Browser](#browser)
+  - [Node.js](#nodejs)
+  - [Browser](#browser)
 
--   [Library configuration](#library-configuration)
+- [Library configuration](#library-configuration)
 
--   [Example usage](#example-usage)
+- [Example usage](#example-usage)
 
-    -   [List all Objects](#list-all-service-objects)
-    -   [Search for Objects](#search-for-service-objects)
-    -   [Create a Object](#create-a-service-object)
-    -   [Load a Object definition](#load-a-service-object-definition)
-    -   [Sending data update](#sending-data-update)
-    -   [Loading a Object by ID](#loading-a-service-object-by-id)
-    -   [Retrieving data from a Object](#retrieving-data-from-a-service-object)
-    -   [Search for data in a Stream](#search-for-data-in-a-stream)
+  - [List all devices](#list-all-devices)
+  - [Search for devices](#search-for-devices)
+  - [Create a device](#create-a-device)
+  - [Load a device definition](#load-a-device-definition)
+  - [Sending data update](#sending-data-update)
+  - [Load a device by ID](#loading-a-device-by-id)
+  - [Retrieving data](#retrieving-data)
+  - [Search for data](#search-for-data)
 
-        -   [Numeric range](#numeric-range)
-        -   [Time range](#time-range)
-        -   [Match](#match)
-        -   [Bounding box](#bounding-box)
-        -   [Distance](#distance)
-        -   [Combining searches](#combining-searches)
+    - [Numeric range](#numeric-range)
+    - [Time range](#time-range)
+    - [Match](#match)
+    - [Bounding box](#bounding-box)
+    - [Distance](#distance)
+    - [Combining searches](#combining-searches)
 
--   [Getting realtime updates](#getting-realtime-updates)
+- [Getting realtime updates](#getting-realtime-updates)
 
-    -   [Connecting to the broker](#connecting-to-the-broker)
-    -   [Listening for updates to a stream](#listening-for-updates-to-a-stream)
-    -   [Listening for all the updates](#listening-for-all-the-updates)
+  - [Connecting to the broker](#connecting-to-the-broker)
+  - [Listening for updates to a stream](#listening-for-updates-to-a-stream)
+  - [Listening for all the updates](#listening-for-all-the-updates)
 
--   [Actuations](#actuations)
+- [Actuations](#actuations)
 
-    -   [Invoking an actuation](#invoking-an-actuation)
-    -   [Listening for actuations](#listening-for-actuations)
+  - [Invoking an actuation](#invoking-an-actuation)
+  - [Listening for actuations](#listening-for-actuations)
 
--   [Additional notes](#additional-notes)
+- [Additional notes](#additional-notes)
 
-    -   [Async impl](#async-impl)
-    -   [API support](#api-support)
+- [Tests](#tests)
 
--   [Tests](#tests)
+- [Contributing](#contributing)
 
--   [Contributing](#contributing)
+- [Docs](#docs)
 
--   [Docs](#docs)
--   [License](#license)
--   [Changelog](#Changelog)
+- [License](#license)
+- [Changelog](#Changelog)
 
 --------------------------------------------------------------------------------
 
@@ -60,7 +58,7 @@ Raptor IoT platform javascript SDK
 
 Raptor.js exposes the feature from the [Raptor](http://github.com/raptorbox/raptor) platform as a convenient javascript API.
 
-Read further for a gentle introduction or jump to the generated [API documentation](http://raptorbox.github.io/raptorjs/)
+This branch is pair with the Raptor API `v4.x`
 
 # Installation
 
@@ -68,145 +66,97 @@ Read further for a gentle introduction or jump to the generated [API documentati
 
 Install the module from the git repository
 
-`npm i raptorbox/raptorjs`
+```sh
+npm i raptorbox/raptorjs
+```
+
 
 and then import it in your code
 
-`var Raptor = require('raptor')`
+```javascript
+const Raptor = require('raptor')
+```
 
 ## Browser
 
-The library is configured to works with webpack. To generate an build run `webpack` inside the repository directory
+To generate a build use `webpack` inside the repository directory. A generated build is made available under [dist](./dist/) for stable releases.
 
 # Library configuration
 
-The minimal configuration required is the apiKey to access the API.
-
-`var raptor = new Raptor('your api key 1');`
-
-Login with user and password (will fetch a session apiKey automatically)
+The minimum configuration required is the token to access the API.
 
 ```javascript
-var raptor2 = new Raptor({
+const raptor = new Raptor('your api key 1');
+```
+
+Login with user and password (will fetch a session apiKey automatically). An additional `url` can be provided to use a personalized endpoint
+
+```javascript
+const raptor = new Raptor({
   username: "admin",
-  password: "admin"
+  password: "admin",
+  url: "http://raptor.local",
 });
 ```
 
 # Example usage
 
-## List all Objects
+## List all devices
+
+```javascript
+raptor.Inventory().list()
+    .then((list) => console.info("List loaded, %s elements", list.length))
+    .catch((e)   => console.warn("An error occured! %j", e))
+```
+
+Delete an device with
+
+```javascript
+raptor.Inventory().delete(deviceId)
+```
+
+Delete all the devices instances with
 
 ```javascript
 raptor.list()
-
-    .then(function(list) {
-        console.info("List loaded, %s elements", list.length);
-    })
-
-    // .catch is optional, will report errors, if any occurs
-    .catch(function(e) {
-        console.warn("An error occured!");
-    })
-
-    // .finally is optional too, will run after the request is completed (either if failed)
-    .finally(function() {
-        console.log("Done");
-    });
+    .map(raptor.delete)
+    .then(() => console.log("All clear"))
 ```
 
-Load all the Objects in the list.
-
-```javascript
-raptor.list().map(raptor.load).then(function(list) {
-    // list is an array containing ServiceObject instances
-    list.forEach(function(so) {
-        console.log("Loaded %s -> %s", so.id, so.toString());
-    })
-})
-```
-
-Get the last inserted data from an Object
-
-```javascript
-var id = "<object-id>"
-var streamName = "position"
-
-raptor.load(id).then(function(obj) {
-    // return a Promise to use further chainability
-    return obj.stream(streamName).lastUpdate();
-})
-.then(function(record) {
-  console.log("Got data: %j", record.toJSON())
-})
-```
-
-Get a list of data from an Object
-
-```javascript
-var id = "<object-id>"
-raptor.load(id).then(function(obj) {
-    // return a Promise to use further chainability
-    return obj.stream("position").pull();
-})
-.then(function(result) {
-    // result contains a list of records
-    result.data.forEach(function(record) {
-        console.log( "Location data for %s: %j",
-            record.stream() // Stream reference
-                    .getServiceObject() // ServiceObject reference
-                      .id ,
-            record.toJSON() // transform the object to a plain JSON object
-        );
-    });
-
-})
-```
-
-Delete an object with `raptor.delete(objectId)`
-
-Delete all the objects instances with
-
-```javascript
-raptor.list().map(raptor.delete).then(function() {
-    console.log("All gone");
-})
-```
-
-## Search for Objects
+## Search for devices
 
 To perform a search at least one option is required, multiple option will be AND-ed together
 
 ```javascript
 var params = {
-  query: "*berry", // Free-textquery, use * for wildcard
-  name: "drone", // match any name containing `drone`
-  description: "drone",
-  customFields: {
-     model: "a4b2788"
-  }
-};
+    id: "1111-3333-4444-5555",
+    name: {
+        in: ["My drone", "quadcopter_1"]
+    }
+    description: {
+        contains: "example"
+    },
+    properties: {
+        model: "a4b2788"
+    }
+}
 
 // paging support
 var limit = 1000, // get 1000 results
     offset = 10; // starting from record 10
 
-raptor.search(params, limit, offset).then(function(list) {
-    console.log("Found %s", list.size());
-})
+raptor.Inventory().search(params, limit, offset)
+    .then((list) => console.log("Found %s", list.size()))
 ```
 
-## Create a Object
-
-The `position` stream will keep track of the movement of the drone.
+## Create a device
 
 ```javascript
 var drone = {
    "name": "Drone",
-   "description": "My amazing drone",
+   "description": "My drone",
    "streams": {
         "position": {
-            "location": "geo_point" // a geo-point object
             "altitude": "number", // a number
         },
         "sensing": {
@@ -216,25 +166,26 @@ var drone = {
         }
     },
     "actions": [ "take-photo", "beep" ],
-    "customFields": {
+    "properties": {
         model: 'drone-001',
         colors: ['red', 'blue']
     }    
 }
 ```
 
-Create the drone Object in Raptor
+Create the drone in Raptor
 
 ```javascript
-raptor.create(drone)
-    .then(function(drone) {
-        // drone is the new ServiceObject create
-        console.info("Drone ServiceObject created, id" + drone.id);
-        console.info(drone.toString());
-        // see below how to use the drone object to send and receive data
-    }).catch(function(e) {
+raptor.Inventory().create(drone)
+    .then((drone) => {
+        // drone is the new device create
+        console.info("Drone device created, id" + drone.id);
+        console.info(drone.toJSON());
+        // see below how to use the drone device to send and receive data
+    })
+    .catch((e) => {
         console.warn("An error occured!");
-        return raptor.Promise.reject(e);
+        return Promise.reject(e);
     });
 ```
 
@@ -243,28 +194,42 @@ raptor.create(drone)
 First you have to select the stream you want to use, `position` in our case, and send the data with the `push` method.
 
 ```javascript
-drone.stream('position').push({
-    latitude: 11.234,
-    longitude: 45.432
+raptor.Stream().push(drone.getStream('position'), {
+    altitude: 10000
 })
 ```
 
-## Loading an object by ID
+To store a searchable location in the stream use the special `location` field. The `timestamp` field allow to specify the date/time of the record
+
+```javascript
+raptor.Stream().push(drone.getStream('position'),{
+    timestamp: 2037304801,
+    location: {
+        latitude: 11.234,
+        longitude: 45.432
+    }
+    channels: {
+        altitude: 10000
+    }
+})
+```
+
+## Loading a device by ID
 
 Let's load an instance of a Drone from it's definition
 
 ```javascript
-var objectId = '<object-id>';
-raptor.load(objectId)
-  .then(function(drone) {
-      console.info("Drone loaded, id %s", drone.id);
-      console.info(drone.toJSON());
-  })
+let deviceId = "the device id";
+raptor.Inventory().read(deviceId)
+    .then((drone) => console.info("Drone loaded, id %s: \n%s",
+        drone.id,
+        drone.toJSON()
+    ))
 ```
 
-## Retrieving data from an object
+## Retrieving data from a device
 
-The returned value is a `ResultSet` object which expose some simplified methods to use the data from the stream
+The returned value is an array of records from the device
 
 ```javascript
 // paging support
@@ -273,22 +238,7 @@ var offset = 0,
 
 drone.stream("position")
     .pull(offset, limit)
-      .then(function(result) {
-
-        console.log("Data size %s", result.size());
-
-        //Data is stored in `result.data`
-
-        //Get the Stream object reference
-        var stream = data.stream()
-
-        // Drone object reference
-        var object = data.stream().getServiceObject()
-
-        // get RecordSet at a certain index
-        var record = data.get(index);
-
-    });
+      .then((result) => console.log("Data size %s", result.length));
 ```
 
 ## Search for data in a Stream
@@ -297,11 +247,11 @@ Methods to search for data in a stream
 
 Available search types are
 
--   [Numeric range](#numeric-range)
--   [Time range](#time-range)
--   [Match](#match)
--   [Bounding box](#bounding-box)
--   [Distance](#distance)
+- [Numeric range](#numeric-range)
+- [Time range](#time-range)
+- [Match](#match)
+- [Bounding box](#bounding-box)
+- [Distance](#distance)
 
 ### Numeric Range
 
@@ -413,7 +363,7 @@ Those configuration are automatically taken from the configuration object provid
 Get realtime updates from data streams
 
 ```javascript
-drone.stream('stream name').subscribe(function(data) {
+drone.stream('stream name').subscribe((data) => {
     console.log("Stream updated!");
     console.log(data);
 })
@@ -427,20 +377,20 @@ drone.stream('stream name').unubscribe(); // .then().catch().finally()
 
 ## Listening for events
 
-In some case could be useful to receive all the notifications available, to do so use listen to the `data` event on the ServiceObject
+In some case could be useful to receive all the notifications available, to do so use listen to the `data` event on the device
 
 ```javascript
 // register to updates
-drone.subscribe(function(event) {
+drone.subscribe((event) => {
   console.log("Received event %j", event);
 })
 ```
 
 Unregister from events with `drone.unsubscribe()`
 
-# Actuations
+# Actions
 
-Actuations allow to perform operations on an Object.
+Actions allow to invoke virtual operations on an device.
 
 ## Invoking an actuation
 
@@ -449,16 +399,16 @@ To invoke an actuation use the `invoke` method and provide additional parameters
 Note that the argument passed to `invoke` **must** be a string, so to send JSON take care of serializing it accordingly
 
 ```javascript
-var body = JSON.stringify({ exposure: 'high', blur: 0.2 }); // must be a string!
-drone.action('take-photo').invoke(body)
+var status = JSON.stringify({ exposure: 'high', blur: 0.2 }); // must be a string!
+raptor.Action().invoke(drone.getAction('take-photo'), status)
 ```
 
-## Listening for actuations
+## Listening for actions
 
 On the device side you can listen for specific actions and implement actuations on their arrival.
 
 ```javascript
-drone.action("take-photo").listen(function(id, raw) {
+raptor.Action().subscribe(drone.getAction("take-photo"), (id, raw) => {
     // parse content
     var params = JSON.parse(raw)
     console.log("[id: %s] Take a photo with exposure: %j and blur: %s", id, params.exposure, params.blur);
