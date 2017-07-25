@@ -1,33 +1,11 @@
 module.exports = {
-    "name": "smart sensor device",
-    "description": "test device",
+    "name": "Robot",
+    "description": "robotic device",
     "streams": {
         "test": {
-            "type": "test",
-            "name": "test", 
-            "description": "test1",
-            "channels": {
-                "num": {
-                    "name": "num",
-                    "unit": "num",
-                    "type": "number"
-                },
-                "bool": {
-                    "name": "bool",
-                    "unit": "bool",
-                    "type": "boolean"
-                },
-                "spatial": {
-                    "name": "spatial",
-                    "unit": "spatial",
-                    "type": "geo_point"
-                },
-                "text": {
-                    "name": "text",
-                    "unit": "text`",
-                    "type": "string"
-                }
-            }
+            "num": "number",
+            "bool": "boolean",
+            "text": "string"
         },
         "temperature": {
             "description": "Measure the temperature",
@@ -41,11 +19,12 @@ module.exports = {
             }
         }
     },
-    "customFields": {
+    "properties": {
         "example": true
     },
     "settings": {
-        "storeEnabled": false
+        "storeData": true,
+        "eventsEnabled": false
     },
     "actions": [
         "makeCall",
@@ -53,6 +32,6 @@ module.exports = {
             "name": "makePhoto",
             "status": "active=1&destroy=now"
         },
-        "eatPotatoes"
+        "eatMeal"
     ]
 }

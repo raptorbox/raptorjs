@@ -16,7 +16,7 @@ limitations under the License.
 
 var d = require("debug")("raptorjs:index")
 
-var EventEmitter = require("event-emitter")
+var EventEmitter = require("events").EventEmitter
 
 /**
  * Raptor SDK wrapper
@@ -28,20 +28,17 @@ var EventEmitter = require("event-emitter")
  * @constructor
  * @param {Object} config configuration object
  */
-class Raptor {
+class Raptor extends EventEmitter {
 
     constructor(config) {
 
-        EventEmitter.call(this)
+        super()
 
         this.config = {}
         this.isBrowser = (typeof window !== "undefined")
 
         this.permissions = require("./lib/permissions")
         this.routes = require("./lib/routes")
-
-        this.RecordSet = require("./lib/model/RecordSet")
-        this.ResultSet = require("./lib/model/ResultSet")
 
         const defaultConfig = {
             apiKey: null,
@@ -59,6 +56,7 @@ class Raptor {
 
         this.config = Object.assign({}, defaultConfig, config)
         d("Client configuration: %j", this.config)
+
     }
 
     getConfig() {
@@ -100,3 +98,4 @@ class Raptor {
 }
 
 module.exports = Raptor
+module.exports.models = require("./lib/model/models")

@@ -12,31 +12,35 @@ describe("Inventory", function () {
     })
 
     it("should update an object streams and actions", function () {
-        return util.createInstance()
-        .then(function (device) {
+        return util.getRaptor()
+        .then((raptor) => {
+            return util.createDevice(raptor)
+                .then((device) => {
 
-            const raptor = this
+                    d("Created device %s", device.id)
+                    d("%j", device.toJSON())
 
-            d("Created device %s", device.id)
+                    device.actions = []
+                    device.streams["test1"] = {
+                        a: "number",
+                        b: "string"
+                    }
 
-            device.actions = []
-            device.streams["test1"] = {
-                test: "number",
-                test1: "string"
-            }
-
-            return raptor.Inventory().update(device)
+                    return raptor.Inventory().update(device)
+                })
         })
     })
 
     it("should delete an object", function () {
-        return util.createInstance()
-        .then(function (device) {
-            const raptor = this
-            return raptor.Inventory().delete(device)
-                .then(() => raptor.Inventory().read(device.id))
-                .catch(() => Promise.resolve())
-        })
+        return util.getRaptor()
+            .then((raptor) => {
+                return util.createDevice(raptor)
+                    .then((device) => {
+                        return raptor.Inventory().delete(device)
+                            .then(() => this.Inventory().read(device.id))
+                            .catch(() => Promise.resolve())
+                    })
+            })
     })
 
 })
