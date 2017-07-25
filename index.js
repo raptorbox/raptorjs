@@ -95,6 +95,14 @@ class Raptor extends EventEmitter {
         return this.inventory
     }
 
+    Stream() {
+        if(!this.stream) {
+            const Stream = require("./lib/Stream")
+            this.stream = new Stream(this)
+        }
+        return this.stream
+    }
+
 }
 
 module.exports = Raptor
