@@ -2,6 +2,21 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+<a name="4.3.0"></a>
+# [4.3.0](https://github.com/raptorbox/raptorjs/compare/v4.2.0...v4.3.0) (2017-07-26)
+
+
+### Bug Fixes
+
+* remove event-emitter ref ([2a1a2f4](https://github.com/raptorbox/raptorjs/commit/2a1a2f4))
+
+
+### Features
+
+* skip api test ([9c8bc8f](https://github.com/raptorbox/raptorjs/commit/9c8bc8f))
+
+
+
 <a name="4.2.0"></a>
 # [4.2.0](https://github.com/raptorbox/raptorjs/compare/v4.1.2...v4.2.0) (2017-07-26)
 
