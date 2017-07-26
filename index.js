@@ -41,7 +41,7 @@ class Raptor extends EventEmitter {
         this.routes = require("./lib/routes")
 
         const defaultConfig = {
-            apiKey: null,
+            token: null,
             username: null,
             password: null,
             url: "https://api.raptorbox.eu",
@@ -50,7 +50,7 @@ class Raptor extends EventEmitter {
 
         if(typeof config === "string") {
             config = {
-                apiKey: config
+                token: config
             }
         }
 
