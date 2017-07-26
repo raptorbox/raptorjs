@@ -1,4 +1,4 @@
-# raptor.js
+# Raptor javascript SDK
 
 Raptor IoT platform javascript SDK
 
