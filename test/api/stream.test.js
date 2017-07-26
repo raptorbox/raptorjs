@@ -6,6 +6,8 @@ const util = require("../util")
 
 describe("Stream", function () {
 
+    this.timeout(10000)
+
     it("should push data", function () {
         return util.getRaptor()
             .then((raptor) => {
