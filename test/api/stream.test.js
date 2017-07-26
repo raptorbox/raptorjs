@@ -1,8 +1,8 @@
 
-const assert = require("chai").assert
-const Promise = require("bluebird")
+// const assert = require("chai").assert
+// const Promise = require("bluebird")
 const d = require("debug")("raptorjs:test:stream")
-const util = require("./util")
+const util = require("../util")
 
 describe("Stream", function () {
 

@@ -3,7 +3,7 @@ const assert = require("chai").assert
 const cloneDeep = require("lodash.clonedeep")
 const Promise = require("bluebird")
 const d = require("debug")("raptorjs:test:inventory")
-const util = require("./util")
+const util = require("../util")
 
 describe("Inventory", function () {
 
@@ -13,22 +13,22 @@ describe("Inventory", function () {
 
     it("should update an object streams and actions", function () {
         return util.getRaptor()
-        .then((raptor) => {
-            return util.createDevice(raptor)
-                .then((device) => {
+            .then((raptor) => {
+                return util.createDevice(raptor)
+                    .then((device) => {
 
-                    d("Created device %s", device.id)
-                    d("%j", device.toJSON())
+                        d("Created device %s", device.id)
+                        d("%j", device.toJSON())
 
-                    device.actions = []
-                    device.streams["test1"] = {
-                        a: "number",
-                        b: "string"
-                    }
+                        device.actions = []
+                        device.streams["test1"] = {
+                            a: "number",
+                            b: "string"
+                        }
 
-                    return raptor.Inventory().update(device)
-                })
-        })
+                        return raptor.Inventory().update(device)
+                    })
+            })
     })
 
     it("should delete an object", function () {
@@ -56,14 +56,14 @@ describe("Inventory", function () {
                         return raptor.Inventory().search({
                             name: device.name
                         })
-                        .then((list) => {
+                            .then((list) => {
 
-                            d("Found %s records", list.length)
-                            assert.equal(1, list.length)
+                                d("Found %s records", list.length)
+                                assert.equal(1, list.length)
 
-                            return Promise.all(list)
-                                .each((d) => raptor.Inventory().delete(d))
-                        })
+                                return Promise.all(list)
+                                    .each((d) => raptor.Inventory().delete(d))
+                            })
                     })
             })
     })
@@ -74,7 +74,7 @@ describe("Inventory", function () {
             .then((raptor) => {
 
                 let json = require("./data/device")
-                
+
                 let json1 = cloneDeep(json)
                 let json2 = cloneDeep(json)
                 let json3 = cloneDeep(json)
@@ -108,23 +108,23 @@ describe("Inventory", function () {
                                 active: false
                             }
                         })
-                        .then((list) => {
-                            return Promise.all(list)
-                                .each((d) => raptor.Inventory().delete(d))
-                                .then(() => {
-                                    return Promise.resolve(list)
-                                })
-                        })
-                        .then((list) => {
-
-                            d("Found %s records", list.length)
-                            list.forEach((dev) => {
-                                d("- device %s (uid:%s)", dev.name, dev.userId)
+                            .then((list) => {
+                                return Promise.all(list)
+                                    .each((d) => raptor.Inventory().delete(d))
+                                    .then(() => {
+                                        return Promise.resolve(list)
+                                    })
                             })
+                            .then((list) => {
 
-                            assert.equal(2, list.length)
-                            return Promise.resolve()
-                        })
+                                d("Found %s records", list.length)
+                                list.forEach((dev) => {
+                                    d("- device %s (uid:%s)", dev.name, dev.userId)
+                                })
+
+                                assert.equal(2, list.length)
+                                return Promise.resolve()
+                            })
                     })
             })
     })
