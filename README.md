@@ -127,15 +127,44 @@ raptor.list()
 
 To perform a search at least one option is required, multiple option will be AND-ed together
 
+-   Field `id`, `name`, `description` supports text-based queries, with those optional params
+    ```javascript
+    {
+        // one of those values
+        in: [ "value1", "value2" ],
+        // contains string
+        contains: "some string",
+        // exactly match the string
+        match: "exact match"
+    }
+    ```
+
+-   Field `properties` supports object-based queries, with those optional params
+    ```javascript
+    {
+        // has a key
+        containsKey: "my_key",
+        // has a value
+        containsValue: 1001,
+        // contains those key-values
+        has: {
+            field1: true,
+            field2: 1001
+        }
+    }
+    ```
+
 ```javascript
 var params = {
+    // short format for contains
     id: "1111-3333-4444-5555",
     name: {
-        in: ["My drone", "quadcopter_1"]
+        in: ["My device", "quadcopter_1"]
     }
     description: {
         contains: "example"
     },
+    // short format for has: {...}
     properties: {
         model: "a4b2788"
     }
@@ -152,13 +181,10 @@ raptor.Inventory().search(params, limit, offset)
 ## Create a device
 
 ```javascript
-var drone = {
-   "name": "Drone",
-   "description": "My drone",
+var definition = {
+   "name": "Robot",
+   "description": "My device",
    "streams": {
-        "position": {
-            "altitude": "number", // a number
-        },
         "sensing": {
           "light":    "number",
           "alarm":    "boolean"
@@ -167,21 +193,21 @@ var drone = {
     },
     "actions": [ "take-photo", "beep" ],
     "properties": {
-        model: 'drone-001',
-        colors: ['red', 'blue']
+        "model": 'robot-001',
+        "colors": ['red', 'blue']
     }    
 }
 ```
 
-Create the drone in Raptor
+Create the device in Raptor
 
 ```javascript
-raptor.Inventory().create(drone)
-    .then((drone) => {
-        // drone is the new device create
-        console.info("Drone device created, id" + drone.id);
-        console.info(drone.toJSON());
-        // see below how to use the drone device to send and receive data
+raptor.Inventory().create(definition)
+    .then((device) => {
+        // device is the new device create
+        console.info("Drone device created, id" + device.id);
+        console.info(device.toJSON());
+        // see below how to use the device to send and receive data
     })
     .catch((e) => {
         console.warn("An error occured!");
@@ -191,27 +217,39 @@ raptor.Inventory().create(drone)
 
 ## Sending data update
 
-First you have to select the stream you want to use, `position` in our case, and send the data with the `push` method.
+First you have to select the stream you want to use, `sensing` in our case, and send the data with the `push` method.
 
 ```javascript
-raptor.Stream().push(drone.getStream('position'), {
-    altitude: 10000
+
+const record = device.getStream('sensing').createRecord({
+    light: 90,
+    alarm: true,
+    message: "good morning",
 })
+
+raptor.Stream().push(record)
+
 ```
 
 To store a searchable location in the stream use the special `location` field. The `timestamp` field allow to specify the date/time of the record
 
 ```javascript
-raptor.Stream().push(drone.getStream('position'),{
+
+const record = device.getStream('sensing').createRecord({
     timestamp: 2037304801,
     location: {
         latitude: 11.234,
         longitude: 45.432
     }
     channels: {
-        altitude: 10000
+        light: 42,
+        alarm: false,
+        message: "ok",
     }
 })
+
+raptor.Stream().push(record)
+
 ```
 
 ## Loading a device by ID
@@ -219,12 +257,15 @@ raptor.Stream().push(drone.getStream('position'),{
 Let's load an instance of a Drone from it's definition
 
 ```javascript
+
 let deviceId = "the device id";
+
 raptor.Inventory().read(deviceId)
-    .then((drone) => console.info("Drone loaded, id %s: \n%s",
-        drone.id,
-        drone.toJSON()
+    .then((device) => console.info("Device loaded, id %s: \n%s",
+        device.id,
+        device.toJSON()
     ))
+
 ```
 
 ## Retrieving data from a device
@@ -232,13 +273,13 @@ raptor.Inventory().read(deviceId)
 The returned value is an array of records from the device
 
 ```javascript
+
 // paging support
 var offset = 0,
     limit = 500
 
-drone.stream("position")
-    .pull(offset, limit)
-      .then((result) => console.log("Data size %s", result.length));
+raptor.Stream().pull(device.getStrem("sensing"), offset, limit)
+      .then((result) => console.log("Data size %s == %s", result.length, limit));
 ```
 
 ## Search for data in a Stream
@@ -258,8 +299,12 @@ Available search types are
 Search for data in a stream matching a numeric range constrain
 
 ```javascript
-drone.stream('stream name').searchByNumber("channel name", { from: 'val1', to: 'val2' });
-drone.stream('stream name').searchByNumber("channel name", val_from, val_to });
+raptor.Stream().search(device.getStream('sensing'), {
+    channels: {
+        // search for light threshold between 30, 100
+        light: [30, 100]
+    }
+})
 ```
 
 ### Time Range
@@ -267,9 +312,15 @@ drone.stream('stream name').searchByNumber("channel name", val_from, val_to });
 Search for data in a time range, creation date (`lastUpdate`) value will be used to match the search
 
 ```javascript
-// timeFrom / timeTo can be any value readable as a javascript `Date`
-drone.stream('stream name').searchByTime(timeFrom, timeTo);
-drone.stream('stream name').searchByTime("Tue May 13 2014 10:21:18 GMT+0200 (CEST)", new Date());
+
+const to    = Math.floor((new Date).getTime() / 1000), // now, in UNIX seconds
+      from  =  to - (60*60*24), // -1 day
+
+raptor.Stream().search(device.getStream('sensing'), {
+    timestamp: {
+        between: [ from, to ]
+    }
+})
 ```
 
 ### Match
@@ -277,7 +328,13 @@ drone.stream('stream name').searchByTime("Tue May 13 2014 10:21:18 GMT+0200 (CES
 Search for a matching value in a provided channel
 
 ```javascript
-drone.stream('stream name').searchByText("channel name", "string to search");
+raptor.Stream().search(device.getStream('sensing'), {
+    channels: {
+        message: {
+            match: "warning"
+        }
+    }
+})
 ```
 
 ### Bounding box
@@ -287,12 +344,20 @@ Search by a delimiting [bounding box](http://en.wikipedia.org/wiki/Minimum_bound
 This search type will look to match a channel named `location` with a geojson value. [See API docs](http://docs.servioticypublic.apiary.io/#dataqueries)
 
 ```javascript
-drone.stream('stream name').searchByBoundingBox([
-    // upper point
-    { latitude: '', longitude: '' },
-    // lower point
-    { latitude: '', longitude: '' }
-]);
+raptor.Stream().search(device.getStream('sensing'), {
+    location: {
+        boundingBox: {
+            northWest: {
+                latitude: 11.123
+                longitude: 45.321
+            },
+            southWest: {
+                latitude: 12.123
+                longitude: 46.321
+            }
+        }
+    }
+})
 ```
 
 ### Distance
@@ -300,11 +365,18 @@ drone.stream('stream name').searchByBoundingBox([
 Search data by distance
 
 ```javascript
-// default unit is km
-drone.stream('stream name').searchByDistance({ latitude: 11,longitude: 46 }, 10);
-
-// specifying a unit
-drone.stream('stream name').searchByDistance({ latitude: 11,longitude: 46 }, 1000, 'm');
+raptor.Stream().search(device.getStream('sensing'), {
+    location: {
+        distance: {
+            center: {
+                latitude: 11.123,
+                longitude: 45.321
+            },
+            radius: 100,
+            unit: "km"
+        }
+    }
+})
 ```
 
 ### Combining searches
@@ -314,38 +386,28 @@ To combine multiple filters
 _Notice_ that `distance` is incompatible with `bbox`, if both provided `bbox` will be used
 
 ```javascript
-drone.stream('stream name').search({
-    distance: {
-        position: { latitude: 11, longitude: 46 },
-        // or
-        // position: [11, 46],
-        value: 1,
-        unit: 'km'
-    },
-    numeric: {
-        channel: 'channel name',
-        from: 'val1'
-        to: 'val2'
-    },
-    time: {
-        from: 1368433278000,
-        to:   1399969278000
-    },
-    match: {
-        channel: "channel name",
-        string: "string to search"
-    },
-    bbox: {
-        coords: [
-            // upper point
-            { latitude: '', longitude: '' },
-            // lower point
-            { latitude: '', longitude: '' }
-        ]
-        // or
-        // coords: [ toplat, toplon, bottomlat, bottomlon ]
+raptor.Stream().search(device.getStream('sensing'), {
+    location: {
+        distance: {
+            center: {
+                latitude: 11.123,
+                longitude: 45.321
+            },
+            radius: 100,
+            unit: "km"
+        }
     }
-});
+    channels: {
+        // search for light threshold between 30, 100
+        light: [30, 100],
+        // and with alarm to true
+        alarm: true,
+        // and message matching "warning"
+        message: {
+            match: "warning"
+        }
+    }
+})
 ```
 
 # Getting realtime updates
@@ -363,7 +425,7 @@ Those configuration are automatically taken from the configuration object provid
 Get realtime updates from data streams
 
 ```javascript
-drone.stream('stream name').subscribe((data) => {
+device.Stream().subscribe(device.getStream("sensing"), (data) => {
     console.log("Stream updated!");
     console.log(data);
 })
@@ -372,7 +434,7 @@ drone.stream('stream name').subscribe((data) => {
 To stop listening
 
 ```javascript
-drone.stream('stream name').unubscribe(); // .then().catch().finally()
+device.Stream().unsubscribe(device.getStream("sensing"))
 ```
 
 ## Listening for events
@@ -380,13 +442,17 @@ drone.stream('stream name').unubscribe(); // .then().catch().finally()
 In some case could be useful to receive all the notifications available, to do so use listen to the `data` event on the device
 
 ```javascript
-// register to updates
-drone.subscribe((event) => {
-  console.log("Received event %j", event);
+device.Inventory().subscribe(device, (data) => {
+    console.log("Stream updated!");
+    console.log(data);
 })
 ```
 
-Unregister from events with `drone.unsubscribe()`
+Unregister from events subscription with
+
+```javascript
+device.Inventory().unubscribe(device)
+```
 
 # Actions
 
@@ -400,7 +466,7 @@ Note that the argument passed to `invoke` **must** be a string, so to send JSON 
 
 ```javascript
 var status = JSON.stringify({ exposure: 'high', blur: 0.2 }); // must be a string!
-raptor.Action().invoke(drone.getAction('take-photo'), status)
+raptor.Action().invoke(device.getAction('take-photo'), status)
 ```
 
 ## Listening for actions
@@ -408,7 +474,7 @@ raptor.Action().invoke(drone.getAction('take-photo'), status)
 On the device side you can listen for specific actions and implement actuations on their arrival.
 
 ```javascript
-raptor.Action().subscribe(drone.getAction("take-photo"), (id, raw) => {
+raptor.Action().subscribe(device.getAction("take-photo"), (id, raw) => {
     // parse content
     var params = JSON.parse(raw)
     console.log("[id: %s] Take a photo with exposure: %j and blur: %s", id, params.exposure, params.blur);
