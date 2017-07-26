@@ -1,6 +1,7 @@
 # Raptor javascript SDK
 
-![Build status](https://travis-ci.org/raptorbox/raptorjs.svg) ![npm release](https://badge.fury.io/js/raptor-sdk.svg)
+![Build status](https://travis-ci.org/raptorbox/raptorjs.svg) ![npm release](https://badge.fury.io/js/raptor-sdk.svg) [![Conventional Commits](https://img.shields.io/badge/Conventional%20Commits-1.0.0-yellow.svg)](https://conventionalcommits.org)
+
 
 Raptor IoT platform javascript SDK
 
