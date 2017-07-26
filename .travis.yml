@@ -1,0 +1,14 @@
+language: node_js
+
+node_js:
+  - "node"
+
+before_install:
+  - npm i -g makeshift && makeshift -s @bcoe -r https://registry.npmjs.org
+
+deploy:
+  provider: npm
+  email: lcapra@fbk.eu
+  api_key: $NPM_TOKEN
+  on:
+    tags: true
