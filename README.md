@@ -1,5 +1,7 @@
 # Raptor javascript SDK
 
+![Build status](https://travis-ci.org/raptorbox/raptorjs.svg) ![npm release](https://badge.fury.io/js/raptor-sdk.svg)
+
 Raptor IoT platform javascript SDK
 
 # Topics
@@ -485,6 +487,9 @@ raptor.Action().subscribe(device.getAction("take-photo"), (id, raw) => {
 # Contributing
 
 Feel free to open an issue or contact us to discuss the library status and future development.
+
+## Adding a release
+
 
 # Docs
 

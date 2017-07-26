@@ -1,6 +1,6 @@
 {
   "name": "raptor-sdk",
-  "version": "5.1.0",
+  "version": "4.1.0",
   "description": "Raptor javascript SDK",
   "homepage": "https://github.com/raptorbox/raptorjs",
   "author": "Luca Capra <lcapra@fbk.eu>",
@@ -12,7 +12,8 @@
   "scripts": {
     "test": "./node_modules/mocha/bin/mocha test/*.test.js",
     "test-file": "./node_modules/mocha/bin/mocha test/ --grep",
-    "release": "standard-version"
+    "release-major": "standard-version",
+    "release": "standard-version -- --release-as minor"
   },
   "keywords": [
     "raptor",
