@@ -491,6 +491,10 @@ Feel free to open an issue or contact us to discuss the library status and futur
 
 ## Adding a release
 
+Currently we use `standard-version` to tag version
+
+ - `npm run release` for a minor relase
+ - `npm run release-major` for a major relase
 
 # Docs
 
