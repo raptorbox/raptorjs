@@ -1,6 +1,6 @@
 {
   "name": "raptor-sdk",
-  "version": "4.0.0",
+  "version": "5.0.0",
   "description": "Raptor javascript SDK",
   "homepage": "https://github.com/raptorbox/raptorjs",
   "author": "Luca Capra <lcapra@fbk.eu>",
@@ -40,6 +40,7 @@
     "jsdoc": "^3.5.3",
     "json-loader": "^0.5.7",
     "mocha": "^2.5.3",
+    "standard-version": "^4.2.0",
     "webpack": "^1.15.0"
   }
 }
