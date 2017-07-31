@@ -103,6 +103,14 @@ class Raptor extends EventEmitter {
         return this.stream
     }
 
+    Tree() {
+        if(!this.tree) {
+            const Tree = require("./lib/Tree")
+            this.tree = new Tree(this)
+        }
+        return this.tree
+    }
+
 }
 
 module.exports = Raptor
