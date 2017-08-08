@@ -2,6 +2,26 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+<a name="4.3.6"></a>
+## [4.3.6](https://github.com/raptorbox/raptorjs/compare/v4.3.5...v4.3.6) (2017-07-31)
+
+
+### Bug Fixes
+
+* calls to permissions api ([52c3b7d](https://github.com/raptorbox/raptorjs/commit/52c3b7d))
+
+
+
+<a name="4.3.5"></a>
+## [4.3.5](https://github.com/raptorbox/raptorjs/compare/v4.3.4...v4.3.5) (2017-07-31)
+
+
+
+<a name="4.3.4"></a>
+## [4.3.4](https://github.com/raptorbox/raptorjs/compare/v4.3.3...v4.3.4) (2017-07-31)
+
+
+
 <a name="4.3.3"></a>
 ## [4.3.3](https://github.com/raptorbox/raptorjs/compare/v4.3.2...v4.3.3) (2017-07-30)
 
