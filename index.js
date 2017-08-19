@@ -14,9 +14,9 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
-var d = require("debug")("raptorjs:index")
-
-var EventEmitter = require("events").EventEmitter
+const d = require("debug")("raptorjs:index")
+const models = require("./lib/model/models")
+const EventEmitter = require("events").EventEmitter
 
 /**
  * Raptor SDK wrapper
@@ -39,6 +39,7 @@ class Raptor extends EventEmitter {
 
         this.permissions = require("./lib/permissions")
         this.routes = require("./lib/routes")
+        this.models = models
 
         const defaultConfig = {
             token: null,
@@ -122,4 +123,4 @@ class Raptor extends EventEmitter {
 }
 
 module.exports = Raptor
-module.exports.models = require("./lib/model/models")
+module.exports.models = models
