@@ -16,7 +16,7 @@ limitations under the License.
 
 const d = require("debug")("raptorjs:index")
 const models = require("./lib/model/models")
-const EventEmitter = require("events").EventEmitter
+const EventEmitter = require("eventemitter3")
 
 /**
  * Raptor SDK wrapper
