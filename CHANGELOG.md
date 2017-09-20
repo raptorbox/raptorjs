@@ -2,6 +2,11 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+<a name="4.3.15"></a>
+## [4.3.15](https://github.com/raptorbox/raptorjs/compare/v4.3.14...v4.3.15) (2017-09-20)
+
+
+
 <a name="4.3.14"></a>
 ## [4.3.14](https://github.com/raptorbox/raptorjs/compare/v4.3.13...v4.3.14) (2017-09-20)
 
