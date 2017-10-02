@@ -1,6 +1,6 @@
 {
   "name": "raptor-sdk",
-  "version": "4.3.18",
+  "version": "4.3.21",
   "description": "Raptor javascript SDK",
   "homepage": "https://github.com/raptorbox/raptorjs",
   "author": "Luca Capra <lcapra@fbk.eu>",
