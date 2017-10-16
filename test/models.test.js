@@ -1,5 +1,5 @@
 
-var d = require("debug")("raptorjs:test:models")
+// var d = require("debug")("raptorjs:test:models")
 
 const models = require("../index").models
 var assert = require("chai").assert
