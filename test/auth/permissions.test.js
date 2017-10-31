@@ -5,126 +5,126 @@
   global console
 */
 
-var configFile = "../data/config.json";
+var configFile = process.env.TESTCONFIG || "../data/config.json"
 
-var Raptor = require('../../index');
-var Promise = require('bluebird');
+var Raptor = require("../../index")
+var Promise = require("bluebird")
 
-var assert = require('chai').assert;
-var d = require('debug')("raptorjs:test:auth:permissions");
+var assert = require("chai").assert
+var d = require("debug")("raptorjs:test:auth:permissions")
 
-var json = require('../data/device');
-var r, user, object;
+var json = require("../data/device")
+var r, user, object
 
 var testSetPermission = function (newPerms) {
-  return object.permissions.set( user, newPerms)
-    .then(function (permissions) {
-      assert.isArray(permissions);
-      assert.equal(permissions.length, newPerms.length);
-      return Promise.resolve(permissions);
-    })
-    .then(function (perms) {
-      return object.permissions.get(user)
+    return object.permissions.set( user, newPerms)
         .then(function (permissions) {
-          d("User %s permissions %j", user.uuid, permissions);
-          assert.isArray(permissions);
-          assert.equal(permissions.length, perms.length);
-          return Promise.resolve();
-        });
-    })
-};
-
-describe('raptor auth service', function () {
-
-  before(function () {
-
-    r = new Raptor(require(configFile));
-    return r.create(json)
-      .then(function (obj) {
-        object = obj;
-        d("current user %s", r.currentUser().uuid);
-        d("created object %s", object.id);
-        return Promise.resolve(object);
-      })
-      .then(function (object) {
-        assert.isNotNull(object.id);
-        var name = "pippo" + (new Date()).getTime();
-        return r.auth.users.create({
-          username: name,
-          password: "foobar",
-          email: name + "@bar.local"
+            assert.isArray(permissions)
+            assert.equal(permissions.length, newPerms.length)
+            return Promise.resolve(permissions)
         })
-          .then(function (usr) {
-            user = usr;
-            assert.isNotNull(user.uuid);
-            d("created new user %s", user.uuid);
-          });
-      });
+        .then(function (perms) {
+            return object.permissions.get(user)
+                .then(function (permissions) {
+                    d("User %s permissions %j", user.uuid, permissions)
+                    assert.isArray(permissions)
+                    assert.equal(permissions.length, perms.length)
+                    return Promise.resolve()
+                })
+        })
+}
 
-  });
+describe("raptor auth service", function () {
 
-  describe('device level permissions API', function () {
+    before(function () {
 
-    it('should return empty list of permission', function () {
+        r = new Raptor(require(configFile))
+        return r.create(json)
+            .then(function (obj) {
+                object = obj
+                d("current user %s", r.currentUser().uuid)
+                d("created object %s", object.id)
+                return Promise.resolve(object)
+            })
+            .then(function (object) {
+                assert.isNotNull(object.id)
+                var name = "pippo" + (new Date()).getTime()
+                return r.auth.users.create({
+                    username: name,
+                    password: "foobar",
+                    email: name + "@bar.local"
+                })
+                    .then(function (usr) {
+                        user = usr
+                        assert.isNotNull(user.uuid)
+                        d("created new user %s", user.uuid)
+                    })
+            })
 
-      return object.permissions.get(user)
-        .then(function (permissions) {
-          d("User %s permissions %j", user.uuid, permissions);
+    })
 
-          assert.isArray(permissions);
-          assert.equal(permissions.length, 0);
+    describe("device level permissions API", function () {
 
-          return Promise.resolve();
-        });
-    });
+        it("should return empty list of permission", function () {
 
-    it('should set new permissions', function () {
-      return testSetPermission(["read", "write"]);
-    });
+            return object.permissions.get(user)
+                .then(function (permissions) {
+                    d("User %s permissions %j", user.uuid, permissions)
 
-    it('should empty permissions', function () {
-      return testSetPermission([])
-    });
+                    assert.isArray(permissions)
+                    assert.equal(permissions.length, 0)
 
-    it('should fail for unknown permission', function () {
-      return testSetPermission(["foobar"]).catch(function(e) {
-        d(e);
-        return Promise.resolve();
-      })
-    });
+                    return Promise.resolve()
+                })
+        })
 
-  });
+        it("should set new permissions", function () {
+            return testSetPermission(["read", "write"])
+        })
 
-  describe('token level permissions API', function () {
+        it("should empty permissions", function () {
+            return testSetPermission([])
+        })
 
-    it('should return empty list of permission', function () {
+        it("should fail for unknown permission", function () {
+            return testSetPermission(["foobar"]).catch(function(e) {
+                d(e)
+                return Promise.resolve()
+            })
+        })
 
-      return object.permissions.get('token', user)
-        .then(function (permissions) {
-          d("User %s permissions %j", user.uuid, permissions);
+    })
 
-          assert.isArray(permissions);
-          assert.equal(permissions.length, 0);
+    describe("token level permissions API", function () {
 
-          return Promise.resolve();
-        });
-    });
+        it("should return empty list of permission", function () {
 
-    it('should set new permissions', function () {
-      return testSetPermission(["read", "write"]);
-    });
+            return object.permissions.get("token", user)
+                .then(function (permissions) {
+                    d("User %s permissions %j", user.uuid, permissions)
 
-    it('should empty permissions', function () {
-      return testSetPermission([])
-    });
+                    assert.isArray(permissions)
+                    assert.equal(permissions.length, 0)
 
-    it('should fail for unknown permission', function () {
-      return testSetPermission(["foobar"]).catch(function(e) {
-        d(e);
-        return Promise.resolve();
-      })
-    });
+                    return Promise.resolve()
+                })
+        })
 
-  });
+        it("should set new permissions", function () {
+            return testSetPermission(["read", "write"])
+        })
 
-});
+        it("should empty permissions", function () {
+            return testSetPermission([])
+        })
+
+        it("should fail for unknown permission", function () {
+            return testSetPermission(["foobar"]).catch(function(e) {
+                d(e)
+                return Promise.resolve()
+            })
+        })
+
+    })
+
+})
