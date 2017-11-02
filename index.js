@@ -64,6 +64,11 @@ class Raptor extends EventEmitter {
         return this.config
     }
 
+    setConfig(cfg) {
+        this.config = Object.assign({}, cfg)
+        this.Auth().reset()
+    }
+
     getClient() {
         if(!this.client) {
             const Client = require("./lib/Client")

@@ -18,17 +18,17 @@ var r, token
 
 
 var loadAuthToken = function () {
-    return r.auth.tokens
-        .list(r.auth.currentUser().uuid)
+    return r.Auth().tokens
+        .list(r.Auth().currentUser().uuid)
         .then(function (list) {
-            var curr = list.filter(t => t.token === r.auth.currentToken())
+            var curr = list.filter(t => t.token === r.Auth().currentToken())
             assert.isTrue(curr.length === 1)
             return Promise.resolve(curr[0])
         })
 }
 
 var listAuthTokens = function() {
-    return r.auth.tokens.list()
+    return r.Auth().tokens.list()
         .then(function (list) {
             return Promise.resolve(list.filter(t => t.type === "LOGIN"))
         })
@@ -44,11 +44,11 @@ describe("raptor auth service", function () {
 
         it("should login", function () {
 
-            return r.auth.login()
+            return r.Auth().login()
                 .then(function (currentUser) {
                     d("Login done: %j", currentUser)
-                    assert.isTrue(r.auth.currentUser().username === configInfo.username)
-                    assert.isTrue(r.auth.currentToken() && r.auth.currentToken().length > 0)
+                    assert.isTrue(r.Auth().currentUser().username === configInfo.username)
+                    assert.isTrue(r.Auth().currentToken() && r.Auth().currentToken().length > 0)
                     return Promise.resolve()
                 })
         })
@@ -57,17 +57,17 @@ describe("raptor auth service", function () {
             return loadAuthToken()
                 .then(function (token2) {
                     token = token2
-                    assert.isTrue(token.token === r.auth.currentToken())
+                    assert.isTrue(token.token === r.Auth().currentToken())
                     return Promise.resolve()
                 })
         })
 
         it("should login again and use a different token", function () {
-            return r.auth.logout()
+            return r.Auth().logout()
                 .then(function () {
-                    assert.isTrue(r.auth.currentToken() === null)
-                    assert.isTrue(r.auth.currentUser() === null)
-                    return r.auth.login().then(function () {
+                    assert.isTrue(r.Auth().currentToken() === null)
+                    assert.isTrue(r.Auth().currentUser() === null)
+                    return r.Auth().login().then(function () {
                         return loadAuthToken().then(function (token2) {
                             assert.notEqual(token.id, token2.id)
                             return Promise.resolve()
@@ -77,9 +77,9 @@ describe("raptor auth service", function () {
         })
 
         it("should login again and have just one login token", function () {
-            return r.auth.logout()
+            return r.Auth().logout()
                 .then(function () {
-                    return r.auth.login().then(function () {
+                    return r.Auth().login().then(function () {
                         return listAuthTokens()
                             .then(function (logins) {
                                 d("Login tokens %j", logins)
@@ -91,9 +91,9 @@ describe("raptor auth service", function () {
         })
 
         it("should refresh the auth token and still have on token avail", function () {
-            return r.auth.login()
+            return r.Auth().login()
                 .then(function () {
-                    return r.auth.refreshToken()
+                    return r.Auth().refreshToken()
                         .then(listAuthTokens)
                         .then(function (logins) {
                             assert.equal(logins.length, 1)
