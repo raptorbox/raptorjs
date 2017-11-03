@@ -18,6 +18,8 @@ const d = require("debug")("raptorjs:index")
 const models = require("./lib/model/models")
 const EventEmitter = require("eventemitter3")
 
+const BASE_URL = "https://raptor.local"
+
 /**
  * Raptor SDK wrapper
  *
@@ -45,9 +47,17 @@ class Raptor extends EventEmitter {
             token: null,
             username: null,
             password: null,
-            url: "https://api.raptorbox.eu",
-            debug: false
+            url: BASE_URL,
+            debug: false,
+            // oauth2
+            accessTokenUri: BASE_URL + "/oauth/access_token",
+            authorizationUri: BASE_URL + "/oauth/authorize",
+            redirectUri: BASE_URL + "/oauth/callback",
+            clientId: null,
+            clientSecret: null,
+            scopes: null,
         }
+
 
         if(typeof config === "string") {
             config = {
@@ -56,8 +66,8 @@ class Raptor extends EventEmitter {
         }
 
         this.config = Object.assign({}, defaultConfig, config)
-        d("Client configuration: %j", this.config)
 
+        d("Client configuration: %j", this.config)
     }
 
     getConfig() {
