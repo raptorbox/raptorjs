@@ -93,6 +93,14 @@ class Raptor extends EventEmitter {
         return this.admin
     }
 
+    App() {
+        if(!this.app) {
+            const App = require("./lib/App")
+            this.app = new App(this)
+        }
+        return this.app
+    }
+
     Profile() {
         if(!this.profile) {
             const Profile = require("./lib/Profile")
