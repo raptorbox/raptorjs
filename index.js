@@ -18,6 +18,8 @@ const d = require("debug")("raptorjs:index")
 const models = require("./lib/model/models")
 const EventEmitter = require("eventemitter3")
 
+const BASE_URL = "http://raptor.local"
+
 /**
  * Raptor SDK wrapper
  *
@@ -41,13 +43,18 @@ class Raptor extends EventEmitter {
         this.routes = require("./lib/routes")
         this.models = models
 
-        const defaultConfig = {
+        this.defaultConfig = {
             token: null,
             username: null,
             password: null,
-            url: "https://api.raptorbox.eu",
-            debug: false
+            url: BASE_URL,
+            debug: false,
+            // oauth2
+            clientId: null,
+            clientSecret: null,
+            scopes: null,
         }
+
 
         if(typeof config === "string") {
             config = {
@@ -55,9 +62,7 @@ class Raptor extends EventEmitter {
             }
         }
 
-        this.config = Object.assign({}, defaultConfig, config)
-        d("Client configuration: %j", this.config)
-
+        this.setConfig(config)
     }
 
     getConfig() {
@@ -65,8 +70,20 @@ class Raptor extends EventEmitter {
     }
 
     setConfig(cfg) {
-        this.config = Object.assign({}, cfg)
+
+        this.config = Object.assign({}, this.defaultConfig, cfg)
+
+        // reset oauth2 url
+        if(this.config.clientId) {
+            this.config = Object.assign(this.config, {
+                accessTokenUri: this.config.accessTokenUri || `${this.config.url}${this.routes.accessTokenUri}`,
+                authorizationUri: this.config.authorizationUri || `${this.config.url}${this.routes.authorizationUri}`,
+                redirectUri: this.config.redirectUri || `${this.config.url}${this.routes.redirectUri}`,
+            })
+        }
+
         this.Auth().reset()
+        d("Client configuration: %j", this.config)
     }
 
     getClient() {

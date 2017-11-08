@@ -1,6 +1,6 @@
 {
   "name": "raptor-sdk",
-  "version": "4.3.38",
+  "version": "5.0.0",
   "description": "Raptor javascript SDK",
   "homepage": "https://github.com/raptorbox/raptorjs",
   "author": "Luca Capra <lcapra@fbk.eu>",
@@ -27,6 +27,7 @@
   },
   "dependencies": {
     "bluebird": "^3.5.0",
+    "client-oauth2": "^4.1.0",
     "debug": "^2.6.8",
     "eventemitter3": "^2.0.3",
     "lodash.clonedeep": "^4.5.0",
