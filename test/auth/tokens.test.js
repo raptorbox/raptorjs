@@ -1,5 +1,4 @@
 
-const Raptor = require("../../index")
 const Promise = require("bluebird")
 
 const assert = require("chai").assert

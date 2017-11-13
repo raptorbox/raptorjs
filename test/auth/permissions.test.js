@@ -1,130 +1,51 @@
-/*
-  global describe
-  global before
-  global it
-  global console
-*/
 
-var configFile = process.env.TESTCONFIG || "../data/config.json"
+const assert = require("chai").assert
+const util = require("../util")
 
-var Raptor = require("../../index")
-var Promise = require("bluebird")
+describe("raptor role service", function () {
+    describe("permissions API", function () {
 
-var assert = require("chai").assert
-var d = require("debug")("raptorjs:test:auth:permissions")
-
-var json = require("../data/device")
-var r, user, object
-
-var testSetPermission = function (newPerms) {
-    return object.permissions.set( user, newPerms)
-        .then(function (permissions) {
-            assert.isArray(permissions)
-            assert.equal(permissions.length, newPerms.length)
-            return Promise.resolve(permissions)
-        })
-        .then(function (perms) {
-            return object.permissions.get(user)
-                .then(function (permissions) {
-                    d("User %s permissions %j", user.uuid, permissions)
-                    assert.isArray(permissions)
-                    assert.equal(permissions.length, perms.length)
-                    return Promise.resolve()
+        it("should allow read", function () {
+            return util.getRaptor()
+                .then((adm) => {
+                    return util.createUserInstance()
+                        .then(function (usr) {
+                            return adm.Admin().Role()
+                                .create({
+                                    name: "test",
+                                    permissions: [
+                                        "admin_device",
+                                    ]
+                                }).then((role) => {
+                                    const u1 = usr.Auth().getUser()
+                                    u1.roles.push(role.name)
+                                    return adm.Admin().User().update(u1)
+                                }).then(() => {
+                                    return usr.Auth()
+                                        .can("device", "read")
+                                        .then((res) => {
+                                            assert.isTrue(res.result)
+                                            return Promise.resolve()
+                                        })
+                                })
+                        })
                 })
         })
-}
 
-describe("raptor auth service", function () {
-
-    before(function () {
-
-        r = new Raptor(require(configFile))
-        return r.create(json)
-            .then(function (obj) {
-                object = obj
-                d("current user %s", r.currentUser().uuid)
-                d("created object %s", object.id)
-                return Promise.resolve(object)
-            })
-            .then(function (object) {
-                assert.isNotNull(object.id)
-                var name = "pippo" + (new Date()).getTime()
-                return r.auth.users.create({
-                    username: name,
-                    password: "foobar",
-                    email: name + "@bar.local"
+        it("should check a token", function () {
+            return util.getRaptor()
+                .then((adm) => {
+                    return util.createUserInstance()
+                        .then(function (usr) {
+                            return adm.Admin().Token()
+                                .check({
+                                    token: usr.Auth().getToken(),
+                                }).then((usr1) => {
+                                    assert.equal(usr1.id, usr.Auth().getUser().id)
+                                    return Promise.resolve()
+                                })
+                        })
                 })
-                    .then(function (usr) {
-                        user = usr
-                        assert.isNotNull(user.uuid)
-                        d("created new user %s", user.uuid)
-                    })
-            })
-
+        })
     })
-
-    describe("device level permissions API", function () {
-
-        it("should return empty list of permission", function () {
-
-            return object.permissions.get(user)
-                .then(function (permissions) {
-                    d("User %s permissions %j", user.uuid, permissions)
-
-                    assert.isArray(permissions)
-                    assert.equal(permissions.length, 0)
-
-                    return Promise.resolve()
-                })
-        })
-
-        it("should set new permissions", function () {
-            return testSetPermission(["read", "write"])
-        })
-
-        it("should empty permissions", function () {
-            return testSetPermission([])
-        })
-
-        it("should fail for unknown permission", function () {
-            return testSetPermission(["foobar"]).catch(function(e) {
-                d(e)
-                return Promise.resolve()
-            })
-        })
-
-    })
-
-    describe("token level permissions API", function () {
-
-        it("should return empty list of permission", function () {
-
-            return object.permissions.get("token", user)
-                .then(function (permissions) {
-                    d("User %s permissions %j", user.uuid, permissions)
-
-                    assert.isArray(permissions)
-                    assert.equal(permissions.length, 0)
-
-                    return Promise.resolve()
-                })
-        })
-
-        it("should set new permissions", function () {
-            return testSetPermission(["read", "write"])
-        })
-
-        it("should empty permissions", function () {
-            return testSetPermission([])
-        })
-
-        it("should fail for unknown permission", function () {
-            return testSetPermission(["foobar"]).catch(function(e) {
-                d(e)
-                return Promise.resolve()
-            })
-        })
-
-    })
-
 })
