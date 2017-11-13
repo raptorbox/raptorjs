@@ -1,17 +1,9 @@
-/*
-  global describe
-  global before
-  global it
-  global console
-*/
 
 const Promise = require("bluebird")
-
 const Raptor = require("../../index")
 const util = require("../util")
 
 const assert = require("chai").assert
-const d = require("debug")("raptorjs:test:auth:tokens")
 
 describe("raptor auth service", function () {
 
@@ -29,6 +21,31 @@ describe("raptor auth service", function () {
 
         it("should login admin2", function () {
             return util.getRaptor()
+        })
+
+        it("should detect expired token", function () {
+            return util.getRaptor()
+                .then((r) => {
+
+                    assert.equal(false, r.Auth().loginIsExpired())
+                    r.Auth().state.expires = Date.now() - 5000
+                    assert.equal(true, r.Auth().loginIsExpired())
+
+                    return r.Admin().Token().create({
+                        expires: Math.floor(Date.now()/1000) + 3600,
+                        name: util.randomName("token")
+                    }).then((t) => {
+                        r.setConfig({ url: r.getConfig().url, token: t.token })
+                        return r.Admin().User().me()
+                    }).then(() => {
+
+                        assert.equal(false, r.Auth().loginIsExpired())
+                        r.Auth().state.expires = Date.now() - 5000
+                        assert.equal(false, r.Auth().loginIsExpired())
+
+                        return Promise.resolve()
+                    })
+                })
         })
 
         it("should get retrieve login token", function () {

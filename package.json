@@ -11,6 +11,7 @@
   },
   "scripts": {
     "test": "./node_modules/mocha/bin/mocha test/*.test.js",
+    "test-api": "./node_modules/mocha/bin/mocha test/*/*.test.js",
     "mocha": "./node_modules/mocha/bin/mocha",
     "test-file": "./node_modules/mocha/bin/mocha test/*/* --grep",
     "release-major": "./node_modules/standard-version/bin/cli.js",
