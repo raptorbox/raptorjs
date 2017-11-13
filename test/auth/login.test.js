@@ -5,101 +5,73 @@
   global console
 */
 
-var configFile = process.env.TESTCONFIG || "../data/config.json"
+const Promise = require("bluebird")
 
-var Raptor = require("../../index")
-var Promise = require("bluebird")
+const Raptor = require("../../index")
+const util = require("../util")
 
-var assert = require("chai").assert
-var d = require("debug")("raptorjs:test:auth:tokens")
-
-var configInfo = require(configFile)
-var r, token
-
-
-var loadAuthToken = function () {
-    return r.Auth().tokens
-        .list(r.Auth().currentUser().uuid)
-        .then(function (list) {
-            var curr = list.filter(t => t.token === r.Auth().currentToken())
-            assert.isTrue(curr.length === 1)
-            return Promise.resolve(curr[0])
-        })
-}
-
-var listAuthTokens = function() {
-    return r.Auth().tokens.list()
-        .then(function (list) {
-            return Promise.resolve(list.filter(t => t.type === "LOGIN"))
-        })
-}
+const assert = require("chai").assert
+const d = require("debug")("raptorjs:test:auth:tokens")
 
 describe("raptor auth service", function () {
 
-    before(function () {
-        r = new Raptor(configInfo)
-    })
+    // before(function () {})
 
     describe("authentication API", function () {
 
         it("should login", function () {
-
-            return r.Auth().login()
-                .then(function (currentUser) {
-                    d("Login done: %j", currentUser)
-                    assert.isTrue(r.Auth().currentUser().username === configInfo.username)
-                    assert.isTrue(r.Auth().currentToken() && r.Auth().currentToken().length > 0)
-                    return Promise.resolve()
-                })
+            return util.createUserInstance()
         })
 
-        it("should retrieve the token", function () {
-            return loadAuthToken()
-                .then(function (token2) {
-                    token = token2
-                    assert.isTrue(token.token === r.Auth().currentToken())
-                    return Promise.resolve()
-                })
+        it("should login admin", function () {
+            return util.createAdminInstance()
+        })
+
+        it("should login admin2", function () {
+            return util.getRaptor()
+        })
+
+        it("should get retrieve login token", function () {
+            return util.getRaptor().then((r) => r.Admin().Token().current().then((t) => {
+
+                assert.equal(t.token, r.Auth().getToken())
+                assert.equal("LOGIN", t.type)
+                assert.isTrue(t.expires*1000 > Date.now())
+
+                return Promise.resolve()
+            }))
         })
 
         it("should login again and use a different token", function () {
-            return r.Auth().logout()
-                .then(function () {
-                    assert.isTrue(r.Auth().currentToken() === null)
-                    assert.isTrue(r.Auth().currentUser() === null)
-                    return r.Auth().login().then(function () {
-                        return loadAuthToken().then(function (token2) {
-                            assert.notEqual(token.id, token2.id)
+            return util.createUserInstance().then((r) => {
+                const oldToken = r.Auth().getToken()
+                return r.Auth().logout()
+                    .then(function () {
+
+                        assert.equal(null, r.Auth().getToken())
+                        assert.equal(null, r.Auth().getToken())
+
+                        return r.Auth().login().then(function () {
+                            assert.notEqual(oldToken, r.Auth().getToken())
                             return Promise.resolve()
                         })
                     })
-                })
+            })
         })
 
-        it("should login again and have just one login token", function () {
-            return r.Auth().logout()
-                .then(function () {
-                    return r.Auth().login().then(function () {
-                        return listAuthTokens()
-                            .then(function (logins) {
-                                d("Login tokens %j", logins)
-                                assert.equal(logins.length, 1)
-                                return Promise.resolve()
-                            })
+        it("should logout and have the token disabled", function () {
+            return util.createUserInstance().then((r) => {
+                const oldToken = r.Auth().getToken()
+                return r.Auth().logout()
+                    .then(function () {
+                        const r2 = new Raptor({ url: r.getConfig().url, token: oldToken })
+                        return r2.Admin().User().me()
                     })
-                })
-        })
-
-        it("should refresh the auth token and still have on token avail", function () {
-            return r.Auth().login()
-                .then(function () {
-                    return r.Auth().refreshToken()
-                        .then(listAuthTokens)
-                        .then(function (logins) {
-                            assert.equal(logins.length, 1)
-                            return Promise.resolve()
-                        })
-                })
+                    .catch((e) => {
+                        assert.equal(401, e.code)
+                        return Promise.resolve()
+                    })
+            })
         })
 
     })
