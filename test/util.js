@@ -43,10 +43,11 @@ l.createUserInstance = (roles) => {
             u.roles = roles ? roles : u.roles
             return r.Admin().User().create(u)
                 .then(() => {
-                    const r2 = new Raptor(Object.assign({}, config.url, {
+                    const r2 = new Raptor({
+                        url: config.url,
                         username: u.username,
                         password: u.password,
-                    }))
+                    })
                     return r2.Auth().login()
                         .then(() => Promise.resolve(r2))
                 })
