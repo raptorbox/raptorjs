@@ -33,21 +33,23 @@ describe("app service", function () {
                             name: util.randomName("app"),
                             users: [ {
                                 id: usr1Id,
-                                role: [ "operator" ]
+                                roles: [ "operator" ]
                             } ],
                             devices: [dev.id],
                             roles: [{
                                 name: "operator",
                                 permissions: [
-                                    "read_device",
-                                    "read_own_device",
+                                    "admin_device",
+                                    "read_app",
                                 ]
                             }]
                         }).then((app) => {
                             d("Created app %s", app.name)
                             return usr1.App().read(app).then((app) => {
                                 d("usr1 can read app %s", app.name)
-                                return Promise.resolve()
+                                return usr1.Inventory().read(app.devices[0]).then(() => {
+                                    return Promise.resolve()
+                                })
                             })
                         })
                     })

@@ -24,7 +24,7 @@ const BASE_URL = "http://raptor.local"
  * Raptor SDK wrapper
  *
  * @author Luca Capra <luca.capra@create-net.org>
- * @copyright CREATE-NET
+ * @copyright FBK/CREATE-NET
  * @license Apache-2.0
  *
  * @constructor
@@ -44,6 +44,7 @@ class Raptor extends EventEmitter {
         this.models = models
 
         this.defaultConfig = {
+            domain: null,
             token: null,
             username: null,
             password: null,
@@ -72,6 +73,10 @@ class Raptor extends EventEmitter {
     setConfig(cfg) {
 
         this.config = Object.assign({}, this.defaultConfig, cfg)
+
+        if(!this.config.domain && (this.config.app || this.config.appId)) {
+            this.config.domain = this.config.app || this.config.appId
+        }
 
         // reset oauth2 url
         if(this.config.clientId) {
