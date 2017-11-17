@@ -7,8 +7,6 @@ const util = require("../util")
 
 describe("Inventory", function () {
 
-    this.timeout(10000)
-
     it("should create a new object", function () {
         return util.createDevice()
     })
