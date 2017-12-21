@@ -49,6 +49,8 @@ class Raptor extends EventEmitter {
             username: null,
             password: null,
             url: BASE_URL,
+            // full url of the MQTT broker
+            mqttUrl: null,
             debug: false,
             // oauth2
             clientId: null,
