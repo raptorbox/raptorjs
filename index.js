@@ -23,7 +23,7 @@ const BASE_URL = "http://raptor.local"
 /**
  * Raptor SDK wrapper
  *
- * @author Luca Capra <luca.capra@create-net.org>
+ * @author Luca Capra <lcapra@fbk.eu>
  * @copyright FBK/CREATE-NET
  * @license Apache-2.0
  *
@@ -76,9 +76,8 @@ class Raptor extends EventEmitter {
 
         this.config = Object.assign({}, this.defaultConfig, cfg)
 
-        if(!this.config.domain && (this.config.app || this.config.appId)) {
-            this.config.domain = this.config.app || this.config.appId
-        }
+        //allow domain alias
+        this.config.domain = this.config.domain || this.config.app || this.config.appId
 
         // reset oauth2 url
         if(this.config.clientId) {
@@ -88,6 +87,10 @@ class Raptor extends EventEmitter {
                 redirectUri: this.config.redirectUri || `${this.config.url}${this.routes.redirectUri}`,
             })
         }
+
+
+        console.warn("*************************", this.config)
+
 
         this.Auth().reset()
         d("Client configuration: %j", this.config)
