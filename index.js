@@ -88,10 +88,6 @@ class Raptor extends EventEmitter {
             })
         }
 
-
-        console.warn("*************************", this.config)
-
-
         this.Auth().reset()
         d("Client configuration: %j", this.config)
     }
