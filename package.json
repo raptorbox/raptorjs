@@ -1,6 +1,6 @@
 {
   "name": "raptor-sdk",
-  "version": "4.3.41",
+  "version": "5.0.15",
   "description": "Raptor javascript SDK",
   "homepage": "https://github.com/raptorbox/raptorjs",
   "author": "Luca Capra <lcapra@fbk.eu>",
@@ -11,7 +11,9 @@
   },
   "scripts": {
     "test": "./node_modules/mocha/bin/mocha test/*.test.js",
-    "test-file": "./node_modules/mocha/bin/mocha test/ --grep",
+    "test-api": "./node_modules/mocha/bin/mocha test/*/*.test.js",
+    "mocha": "./node_modules/mocha/bin/mocha",
+    "test-file": "./node_modules/mocha/bin/mocha test/*/* --grep",
     "release-major": "./node_modules/standard-version/bin/cli.js",
     "release": "./node_modules/standard-version/bin/cli.js -- --release-as minor"
   },
@@ -26,11 +28,12 @@
     "url": "https://github.com/raptorbox/raptorjs.git"
   },
   "dependencies": {
-    "bluebird": "^3.5.0",
+    "bluebird": "^3.5.1",
+    "client-oauth2": "^4.1.0",
     "debug": "^2.6.8",
     "eventemitter3": "^2.0.3",
     "lodash.clonedeep": "^4.5.0",
-    "mqtt": "^2.9.3",
+    "mqtt": "^2.15.0",
     "request": "^2.82.0",
     "sprintf-js": "^1.1.1"
   },

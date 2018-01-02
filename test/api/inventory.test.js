@@ -7,8 +7,6 @@ const util = require("../util")
 
 describe("Inventory", function () {
 
-    this.timeout(10000)
-
     it("should create a new object", function () {
         return util.createDevice()
     })
@@ -57,8 +55,9 @@ describe("Inventory", function () {
                         return raptor.Inventory().search({
                             name: device.name
                         })
-                            .then((list) => {
+                            .then((pager) => {
 
+                                const list = pager.getContent()
                                 d("Found %s records", list.length)
                                 assert.isTrue(list.length > 0)
 
@@ -70,62 +69,66 @@ describe("Inventory", function () {
     })
 
     it("should find a device by properties", function () {
-        return util.getRaptor()
-            .then((raptor) => {
+        return Promise.all([ util.createUserInstance(), util.getRaptor() ])
+            .then((apis) => {
+
+                const usr1 = apis[0]
+                const adm1 = apis[1]
+
+                const u1id = usr1.Auth().getUser().id
 
                 let json = require("../data/device")
+
+                json.userId = u1id
 
                 let json1 = cloneDeep(json)
                 let json2 = cloneDeep(json)
                 let json3 = cloneDeep(json)
 
                 json1.name = "test_find_properties_1"
+                json1.userId = u1id
                 json1.properties = {
                     foo: "bar",
                     active: false
                 }
+
                 json2.name = "test_find_properties_2"
+                json2.userId = u1id
                 json2.properties = {
                     foo: "baz",
                     active: false
                 }
+
                 json3.name = "test_find_properties_3"
+                json3.userId = u1id
                 json3.properties = {
                     foo: "bar",
                     active: true
                 }
 
                 return Promise.all([
-                    util.createDevice(raptor, json),
-                    util.createDevice(raptor, json1),
-                    util.createDevice(raptor, json2),
-                    util.createDevice(raptor, json3)
-                ]
-                )
-                    .then(() => {
-                        return raptor.Inventory().search({
-                            properties: {
-                                active: false
-                            }
-                        })
-                            .then((list) => {
-                                return Promise.all(list)
-                                    .each((d) => raptor.Inventory().delete(d))
-                                    .then(() => {
-                                        return Promise.resolve(list)
-                                    })
-                            })
-                            .then((list) => {
+                    util.createDevice(adm1, json),
+                    util.createDevice(adm1, json1),
+                    util.createDevice(adm1, json2),
+                    util.createDevice(adm1, json3)
+                ]).then(() => {
+                    return usr1.Inventory().search({
+                        properties: {
+                            active: false
+                        }
+                    }).then((pager) => {
 
-                                d("Found %s records", list.length)
-                                list.forEach((dev) => {
-                                    d("- device %s (uid:%s)", dev.name, dev.userId)
-                                })
+                        const list = pager.getContent()
 
-                                assert.equal(2, list.length)
-                                return Promise.resolve()
-                            })
+                        d("Found %s records", list.length)
+                        list.forEach((dev) => d("- %s [userId=%s]", dev.name, dev.userId))
+
+                        assert.isTrue(list.length > 0)
+                        assert.equal(2, list.length)
+
+                        return Promise.resolve()
                     })
+                })
             })
     })
 

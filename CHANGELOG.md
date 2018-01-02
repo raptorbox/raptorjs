@@ -2,18 +2,78 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
-<a name="4.3.41"></a>
-## [4.3.41](https://github.com/raptorbox/raptorjs/compare/v4.3.40...v4.3.41) (2017-11-30)
+<a name="5.0.15"></a>
+## [5.0.15](https://github.com/raptorbox/raptorjs/compare/v5.0.14...v5.0.15) (2018-01-02)
 
 
 
-<a name="4.3.40"></a>
-## [4.3.40](https://github.com/raptorbox/raptorjs/compare/v4.3.39...v4.3.40) (2017-11-23)
+<a name="5.0.14"></a>
+## [5.0.14](https://github.com/raptorbox/raptorjs/compare/v5.0.13...v5.0.14) (2017-12-22)
 
 
 
-<a name="4.3.39"></a>
-## [4.3.39](https://github.com/raptorbox/raptorjs/compare/4.4.0...4.3.39) (2017-11-15)
+<a name="5.0.13"></a>
+## [5.0.13](https://github.com/raptorbox/raptorjs/compare/v5.0.12...v5.0.13) (2017-12-22)
+
+
+
+<a name="5.0.12"></a>
+## [5.0.12](https://github.com/raptorbox/raptorjs/compare/v5.0.11...v5.0.12) (2017-12-22)
+
+
+
+<a name="5.0.11"></a>
+## [5.0.11](https://github.com/raptorbox/raptorjs/compare/v5.0.10...v5.0.11) (2017-12-22)
+
+
+
+<a name="5.0.10"></a>
+## [5.0.10](https://github.com/raptorbox/raptorjs/compare/v5.0.9...v5.0.10) (2017-12-21)
+
+
+
+<a name="5.0.9"></a>
+## [5.0.9](https://github.com/raptorbox/raptorjs/compare/v5.0.8...v5.0.9) (2017-12-21)
+
+
+
+<a name="5.0.8"></a>
+## [5.0.8](https://github.com/raptorbox/raptorjs/compare/v5.0.7...v5.0.8) (2017-12-07)
+
+
+
+<a name="5.0.7"></a>
+## [5.0.7](https://github.com/raptorbox/raptorjs/compare/v5.0.6...v5.0.7) (2017-12-07)
+
+
+
+<a name="5.0.6"></a>
+## [5.0.6](https://github.com/raptorbox/raptorjs/compare/v5.0.5...v5.0.6) (2017-12-06)
+
+
+
+<a name="5.0.5"></a>
+## [5.0.5](https://github.com/raptorbox/raptorjs/compare/v5.0.3...v5.0.5) (2017-12-06)
+
+
+
+<a name="5.0.4"></a>
+## [5.0.4](https://github.com/raptorbox/raptorjs/compare/v5.0.3...v5.0.4) (2017-11-30)
+
+
+
+<a name="5.0.3"></a>
+## [5.0.3](https://github.com/raptorbox/raptorjs/compare/v5.0.1...v5.0.3) (2017-11-21)
+
+
+
+<a name="5.0.2"></a>
+## [5.0.2](https://github.com/raptorbox/raptorjs/compare/v5.0.1...v5.0.2) (2017-11-13)
+
+
+
+<a name="5.0.1"></a>
+## [5.0.1](https://github.com/raptorbox/raptorjs/compare/v5.0.0...v5.0.1) (2017-11-11)
 
 
 
