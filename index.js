@@ -20,6 +20,8 @@ const EventEmitter = require("eventemitter3")
 
 const BASE_URL = "http://raptor.local"
 
+const VERSION = require("./package.json").version
+
 /**
  * Raptor SDK wrapper
  *
@@ -75,6 +77,11 @@ class Raptor extends EventEmitter {
     setConfig(cfg) {
 
         this.config = Object.assign({}, this.defaultConfig, cfg)
+
+        // set default to current page
+        if (!this.config.url && this.isBrowser) {
+            this.config.url = window.location.protocol + "//" + window.location.hostname
+        }
 
         //allow domain alias
         this.config.domain = this.config.domain || this.config.app || this.config.appId
