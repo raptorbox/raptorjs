@@ -80,7 +80,7 @@ class Raptor extends EventEmitter {
 
         // set default to current page
         if (!this.config.url && this.isBrowser) {
-            this.config.url = window.location.protocol + "//" + window.location.hostname
+            this.config.url = window.location.protocol + "//" + window.location.hostname + (window.location.port ? ":"+window.location.port : "")
         }
 
         //allow domain alias
