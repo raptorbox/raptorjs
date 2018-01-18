@@ -48,7 +48,7 @@ class Raptor extends EventEmitter {
             token: null,
             username: null,
             password: null,
-            url: BASE_URL,
+            url: null,
             // full url of the MQTT broker
             mqttUrl: null,
             debug: false,
@@ -75,6 +75,15 @@ class Raptor extends EventEmitter {
     setConfig(cfg) {
 
         this.config = Object.assign({}, this.defaultConfig, cfg)
+
+        if (!this.config.url) {
+            let baseUrl = BASE_URL
+            // set default to current page
+            if (this.isBrowser) {
+                baseUrl = window.location.protocol + "//" + window.location.hostname + (window.location.port ? ":"+window.location.port : "")
+            }
+            this.config.url = baseUrl
+        }
 
         //allow domain alias
         this.config.domain = this.config.domain || this.config.app || this.config.appId
