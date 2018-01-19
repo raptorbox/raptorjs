@@ -38,6 +38,8 @@ class Raptor extends EventEmitter {
 
         super()
 
+        this.version = VERSION
+
         this.config = {}
         this.isBrowser = (typeof window !== "undefined")
 
@@ -157,6 +159,14 @@ class Raptor extends EventEmitter {
             this.stream = new Stream(this)
         }
         return this.stream
+    }
+
+    Action() {
+        if(!this.action) {
+            const Action = require("./lib/Action")
+            this.action = new Action(this)
+        }
+        return this.action
     }
 
     Tree() {
