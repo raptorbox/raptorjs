@@ -108,7 +108,7 @@ const raptor = new Raptor({
 
 ```javascript
 raptor.Inventory().list()
-    .then((list) => console.info("List loaded, %s elements", list.length))
+    .then((pager) => console.info("List loaded, %s elements", pager.getTotalElements()))
     .catch((e)   => console.warn("An error occured! %j", e))
 ```
 
@@ -121,9 +121,11 @@ raptor.Inventory().delete(deviceId)
 Delete all the devices instances with
 
 ```javascript
-raptor.list()
-    .map(raptor.delete)
-    .then(() => console.log("All clear"))
+raptor.Inventory().list()
+    .then((pager) => {
+        pager.getContent().each((d) => raptor.Inventory().delete(d))
+        console.log("All clear")
+    })
 ```
 
 ## Search for devices
