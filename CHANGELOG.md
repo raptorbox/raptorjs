@@ -2,6 +2,11 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+<a name="5.0.29"></a>
+## [5.0.29](https://github.com/raptorbox/raptorjs/compare/v5.0.28...v5.0.29) (2018-02-21)
+
+
+
 <a name="5.0.28"></a>
 ## [5.0.28](https://github.com/raptorbox/raptorjs/compare/v5.0.27...v5.0.28) (2018-02-16)
 
