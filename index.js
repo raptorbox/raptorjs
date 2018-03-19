@@ -153,6 +153,14 @@ class Raptor extends EventEmitter {
         return this.inventory
     }
 
+    Workflow() {
+        if(!this.workflow) {
+            const Workflow = require("./lib/Workflow")
+            this.workflow = new Workflow(this)
+        }
+        return this.workflow
+    }
+
     Stream() {
         if(!this.stream) {
             const Stream = require("./lib/Stream")
