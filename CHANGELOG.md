@@ -2,6 +2,46 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+<a name="5.0.32"></a>
+## [5.0.32](https://github.com/raptorbox/raptorjs/compare/v5.0.31...v5.0.32) (2018-04-24)
+
+
+
+<a name="5.0.30"></a>
+## [5.0.30](https://github.com/raptorbox/raptorjs/compare/v5.0.29...v5.0.30) (2018-04-24)
+
+
+
+<a name="5.0.29"></a>
+## [5.0.29](https://github.com/raptorbox/raptorjs/compare/v5.0.28...v5.0.29) (2018-02-21)
+
+
+
+<a name="5.0.28"></a>
+## [5.0.28](https://github.com/raptorbox/raptorjs/compare/v5.0.27...v5.0.28) (2018-02-16)
+
+
+
+<a name="5.0.27"></a>
+## [5.0.27](https://github.com/raptorbox/raptorjs/compare/v5.0.26...v5.0.27) (2018-01-27)
+
+
+
+<a name="5.0.26"></a>
+## [5.0.26](https://github.com/raptorbox/raptorjs/compare/v5.0.25...v5.0.26) (2018-01-23)
+
+
+
+<a name="5.0.22"></a>
+## [5.0.22](https://github.com/raptorbox/raptorjs/compare/v5.0.21...v5.0.22) (2018-01-17)
+
+
+
+<a name="5.0.21"></a>
+## [5.0.21](https://github.com/raptorbox/raptorjs/compare/v5.0.20...v5.0.21) (2018-01-17)
+
+
+
 <a name="5.0.31"></a>
 ## [5.0.31](https://github.com/raptorbox/raptorjs/compare/v5.0.25...v5.0.31) (2018-04-24)
 
