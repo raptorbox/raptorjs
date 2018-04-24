@@ -6,12 +6,8 @@ All notable changes to this project will be documented in this file. See [standa
 ## [5.0.31](https://github.com/raptorbox/raptorjs/compare/v5.0.25...v5.0.31) (2018-04-24)
 
 
-
-<a name="5.0.26"></a>
-## [5.0.26](https://github.com/raptorbox/raptorjs/compare/v5.0.25...v5.0.26) (2018-04-24)
-=======
 <a name="5.0.30"></a>
-## [5.0.30](https://github.com/raptorbox/raptorjs/compare/v5.0.25...v5.0.30) (2018-03-20)
+## [5.0.30](https://github.com/raptorbox/raptorjs/compare/v5.0.29...v5.0.30) (2018-04-24)
 
 
 
@@ -32,8 +28,6 @@ All notable changes to this project will be documented in this file. See [standa
 
 <a name="5.0.26"></a>
 ## [5.0.26](https://github.com/raptorbox/raptorjs/compare/v5.0.25...v5.0.26) (2018-03-20)
->>>>>>> 0ccb277d42757d0b3f3e4e066d6e0b9f1d754849
-
 
 
 <a name="5.0.25"></a>
@@ -47,7 +41,7 @@ All notable changes to this project will be documented in this file. See [standa
 
 
 <a name="5.0.23"></a>
-## [5.0.23](https://github.com/raptorbox/raptorjs/compare/v5.0.20...v5.0.23) (2018-01-19)
+## [5.0.23](https://github.com/raptorbox/raptorjs/compare/v5.0.22...v5.0.23) (2018-01-18)
 
 
 
@@ -98,6 +92,10 @@ All notable changes to this project will be documented in this file. See [standa
 
 <a name="4.3.39"></a>
 ## [4.3.39](https://github.com/raptorbox/raptorjs/compare/v5.0.2...v4.3.39) (2017-11-15)
+
+
+<a name="5.0.16"></a>
+## [5.0.16](https://github.com/raptorbox/raptorjs/compare/v5.0.15...v5.0.16) (2018-01-17)
 
 
 
