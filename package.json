@@ -29,25 +29,25 @@
   },
   "dependencies": {
     "bluebird": "^3.5.1",
-    "client-oauth2": "^4.1.0",
-    "debug": "^2.6.8",
+    "client-oauth2": "^4.2.0",
+    "debug": "^2.6.9",
     "eventemitter3": "^2.0.3",
     "lodash.clonedeep": "^4.5.0",
-    "marked": "^0.3.9",
-    "mqtt": "^2.15.0",
-    "request": "^2.82.0",
+    "marked": "^0.3.19",
+    "mqtt": "^2.17.0",
+    "request": "^2.85.0",
     "sprintf-js": "^1.1.1"
   },
   "devDependencies": {
-    "babel-core": "^6.25.0",
+    "babel-core": "^6.26.2",
     "babel-loader": "^6.4.1",
     "chai": "^3.5.0",
     "eslint": "^3.19.0",
     "eslint-plugin-react": "^6.10.3",
-    "jsdoc": "^3.5.3",
+    "jsdoc": "^3.5.5",
     "json-loader": "^0.5.7",
     "mocha": "^2.5.3",
-    "standard-version": "^4.2.0",
+    "standard-version": "^4.3.0",
     "webpack": "^1.15.0"
   }
 }
