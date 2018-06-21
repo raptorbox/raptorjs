@@ -1,6 +1,6 @@
 {
   "name": "raptor-sdk",
-  "version": "5.0.33",
+  "version": "5.0.34",
   "description": "Raptor javascript SDK",
   "homepage": "https://github.com/raptorbox/raptorjs",
   "author": "Luca Capra <lcapra@fbk.eu>",
@@ -39,7 +39,7 @@
     "sprintf-js": "^1.1.1"
   },
   "devDependencies": {
-    "babel-core": "^6.26.2",
+    "babel-core": "^6.26.3",
     "babel-loader": "^6.4.1",
     "chai": "^3.5.0",
     "eslint": "^3.19.0",
@@ -47,7 +47,7 @@
     "jsdoc": "^3.5.5",
     "json-loader": "^0.5.7",
     "mocha": "^2.5.3",
-    "standard-version": "^4.3.0",
+    "standard-version": "^4.4.0",
     "webpack": "^1.15.0"
   }
 }
