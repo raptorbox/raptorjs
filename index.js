@@ -185,6 +185,13 @@ class Raptor extends EventEmitter {
         return this.tree
     }
 
+    Diagnostics() {
+        if(!this.diagnostics) {
+            const Tree = require("./lib/Diagnostics")
+            this.diagnostics = new Diagnostics(this)
+        }
+        return this.diagnostics
+    }
 }
 
 module.exports = Raptor
