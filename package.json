@@ -1,6 +1,6 @@
 {
   "name": "raptor-sdk",
-  "version": "5.0.53",
+  "version": "5.0.54",
   "description": "Raptor javascript SDK",
   "homepage": "https://github.com/raptorbox/raptorjs",
   "author": "Luca Capra <lcapra@fbk.eu>",
@@ -28,6 +28,7 @@
     "url": "https://github.com/raptorbox/raptorjs.git"
   },
   "dependencies": {
+    "axios": "^0.19.2",
     "bluebird": "^3.5.1",
     "client-oauth2": "^4.2.0",
     "debug": "^2.6.9",
