@@ -48,7 +48,7 @@
     "jsdoc": "^3.5.5",
     "json-loader": "^0.5.7",
     "mocha": "^2.5.3",
-    "standard-version": "^4.4.0",
+    "standard-version": "^8.0.1",
     "webpack": "^1.15.0"
   }
 }
