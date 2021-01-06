@@ -28,7 +28,7 @@
     "url": "https://github.com/raptorbox/raptorjs.git"
   },
   "dependencies": {
-    "axios": "^0.19.2",
+    "axios": "^0.21.1",
     "bluebird": "^3.5.1",
     "client-oauth2": "^4.2.0",
     "debug": "^2.6.9",
